@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선행연구 문헌 데이터베이스 — 김재환 박사과정</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    overflow: auto; /* 상하 스크롤 항상 허용 */
+  }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    background: #f5f6fa;
+    color: #222;
+  }
+  header {
+    background: #1a3a6c;
+    color: white;
+    padding: 14px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  header .header-left h1 { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+  header .header-left p  { font-size: 10px; color: #aac4ff; }
+
+  /* 우상단 버튼 바 */
+  .export-bar {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 13px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-excel  { background: #1e7e34; color: white; }
+  .btn-excel:hover  { background: #155724; }
+  .btn-notion { background: #ffffff; color: #333; border: 1px solid #aac4ff; }
+  .btn-notion:hover { background: #f0f0f0; color: #111; }
+  .btn-print  { background: #e67e22; color: white; }
+  .btn-print:hover  { background: #b94600; }
+  .btn-csv    { background: #17a2b8; color: white; }
+  .btn-csv:hover    { background: #0e6b7c; }
+
+  /* 인쇄용 스타일 */
+  @media print {
+    header .export-bar, .tab-bar, .stats, .legend { display: none !important; }
+    body { background: white; font-size: 9pt; }
+    .tab-panel { display: block !important; padding: 0; }
+    #tab-int, #tab-kor { display: none !important; }
+    .table-wrap { overflow: visible !important; max-height: none !important; box-shadow: none; }
+    table { min-width: 0 !important; width: 100% !important; }
+    thead th { background: #1A3A6C !important; color: white !important; font-size: 8pt; padding: 4px 5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody td { font-size: 8pt; padding: 3px 5px; }
+    @page { size: A4 landscape; margin: 10mm; }
+  }
+
+  .tab-bar {
+    display: flex;
+    background: #2c508f;
+    padding: 0 28px;
+    position: sticky;
+    top: 56px; /* header 높이만큼 */
+    z-index: 99;
+  }
+  .tab-btn {
+    padding: 10px 22px;
+    cursor: pointer;
+    color: #aac4ff;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab-btn.active {
+    color: white;
+    border-bottom: 3px solid #f0c040;
+  }
+
+  .tab-panel { display: none; padding: 20px 28px; }
+  .tab-panel.active { display: block; }
+
+  /* 테이블 전체를 감싸는 스크롤 컨테이너 */
+  .table-wrap {
+    overflow-x: auto;   /* 좌우 스크롤 */
+    overflow-y: auto;   /* 상하 스크롤 */
+    max-height: calc(100vh - 200px); /* 화면 높이에 맞게 상하 스크롤 영역 */
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  /* 스크롤바 스타일 (Chrome/Edge) — VNC에서 잡기 쉽게 두껍게 */
+  .table-wrap::-webkit-scrollbar { height: 14px; width: 14px; }
+  .table-wrap::-webkit-scrollbar-track { background: #c8d4ee; border-radius: 7px; }
+  .table-wrap::-webkit-scrollbar-thumb { background: #2c508f; border-radius: 7px; border: 3px solid #c8d4ee; }
+  .table-wrap::-webkit-scrollbar-thumb:hover { background: #1a3a6c; }
+  .table-wrap::-webkit-scrollbar-corner { background: #c8d4ee; }
+
+  /* 드래그 커서 힌트 */
+  .table-wrap { cursor: grab; }
+  .table-wrap:active { cursor: grabbing; }
+  /* 링크 버튼은 포인터 유지 */
+  .table-wrap a { cursor: pointer; }
+
+  table {
+    border-collapse: collapse;
+    min-width: 2800px;
+    background: white;
+  }
+  thead th {
+    background: #1a3a6c;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid #2c508f;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  tbody tr:nth-child(even) { background: #f8f9fd; }
+  tbody tr:hover { background: #e8f0fe; }
+  tbody td {
+    padding: 8px 9px;
+    border: 1px solid #dde3f0;
+    vertical-align: top;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  /* 컬럼별 너비 */
+  .col-no    { width: 36px; text-align: center; }
+  .col-div   { width: 60px; text-align: center; }
+  .col-type  { width: 72px; text-align: center; }
+  .col-auth  { width: 110px; }
+  .col-title { width: 230px; }
+  .col-year  { width: 50px; text-align: center; }
+  .col-file  { width: 55px; text-align: center; }
+  .col-subj  { width: 130px; }
+  .col-var   { width: 120px; }
+  .col-mod   { width: 100px; }
+  .col-quant { width: 50px; text-align: center; }
+  .col-qual  { width: 50px; text-align: center; }
+  .col-result{ width: 210px; }
+  .col-limit { width: 170px; }
+  .col-sugg  { width: 160px; }
+  .col-link  { width: 70px; text-align: center; }
+
+  /* 좌측 고정 컬럼 (sticky) */
+  td.col-no, th.col-no { position: sticky; left: 0; z-index: 3; background: #1a3a6c; }
+  td.col-no { background: #f0f3fa; }
+  tbody tr:nth-child(even) td.col-no { background: #e8ecf8; }
+  tbody tr:hover td.col-no { background: #d0dcf4; }
+
+  td.col-div, th.col-div { position: sticky; left: 36px; z-index: 3; background: #1a3a6c; }
+  td.col-div { background: #f0f3fa; }
+  tbody tr:nth-child(even) td.col-div { background: #e8ecf8; }
+  tbody tr:hover td.col-div { background: #d0dcf4; }
+
+  td.col-title, th.col-title {
+    position: sticky; left: 168px; z-index: 3;
+    background: #1a3a6c;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.10);
+  }
+  td.col-title { background: #fff; }
+  tbody tr:nth-child(even) td.col-title { background: #f8f9fd; }
+  tbody tr:hover td.col-title { background: #e8f0fe; }
+
+  .badge-kor { background:#0055a4; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+  .badge-int { background:#c0392b; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+  .badge-journal { background:#27ae60; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+  .badge-conf    { background:#8e44ad; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+  .badge-report  { background:#e67e22; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+  .badge-wp      { background:#7f8c8d; color:white; border-radius:4px; padding:2px 7px; font-size:10px; }
+
+  .check-y { color: #27ae60; font-weight: 700; font-size: 14px; }
+  .check-n { color: #bdc3c7; font-size: 14px; }
+
+  .link-btn {
+    display: inline-block;
+    background: #1a3a6c;
+    color: white;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .link-btn:hover { background: #2c508f; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 11px;
+    align-items: center;
+  }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    text-align: center;
+  }
+  .stat-card .num { font-size: 22px; font-weight: 700; color: #1a3a6c; }
+  .stat-card .lbl { font-size: 10px; color: #888; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>📚 선행연구 문헌 데이터베이스</h1>
+    <p>유튜브 알고리즘 기반 수익 창출 정지(Demonetization)가 AI 생성 콘텐츠 크리에이터 경제에 미치는 영향 — 김재환 박사과정 (중앙대학교 첨단영상대학원)</p>
+  </div>
+  <div class="export-bar">
+    <a class="export-btn btn-excel" href="/문헌데이터베이스_김재환.xlsx" download="문헌데이터베이스_김재환.xlsx">⬇ Excel</a>
+    <button class="export-btn btn-csv" onclick="exportCSV()">⬇ CSV</button>
+    <button class="export-btn btn-notion" onclick="copyNotion()">📋 Notion 복사</button>
+    <button class="export-btn btn-print" onclick="window.print()">🖨 A4 인쇄</button>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab-btn active" onclick="showTab('all')">전체 (12편)</div>
+  <div class="tab-btn" onclick="showTab('int')">국외 문헌 (7편)</div>
+  <div class="tab-btn" onclick="showTab('kor')">국내 문헌 (5편)</div>
+</div>
+
+<!-- 전체 탭 -->
+<div class="tab-panel active" id="tab-all">
+  <div class="stats">
+    <div class="stat-card"><div class="num">12</div><div class="lbl">총 문헌 수</div></div>
+    <div class="stat-card"><div class="num">7</div><div class="lbl">국외 문헌</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="lbl">국내 문헌</div></div>
+    <div class="stat-card"><div class="num">2016–2026</div><div class="lbl">발행 연도 범위</div></div>
+    <div class="stat-card"><div class="num">12</div><div class="lbl">링크 확인 가능</div></div>
+  </div>
+  <div class="legend">
+    <span><span class="badge-kor">국내</span> 국내 문헌</span>
+    <span><span class="badge-int">국외</span> 해외 문헌</span>
+    <span><span class="badge-journal">학술지</span> Journal</span>
+    <span><span class="badge-conf">학술대회</span> Conference</span>
+    <span><span class="badge-report">연구보고서</span></span>
+    <span><span class="badge-wp">워킹페이퍼</span></span>
+    <span><span class="check-y">✓</span> 해당</span>
+    <span><span class="check-n">✗</span> 미해당</span>
+  </div>
+  <div class="table-wrap">
+    <table id="table-all">
+      <thead>
+        <tr>
+          <th class="col-no">No.</th>
+          <th class="col-div">구분</th>
+          <th class="col-type">논문종류</th>
+          <th class="col-auth">저자</th>
+          <th class="col-title">논문제목</th>
+          <th class="col-year">발행연도</th>
+          <th class="col-file">파일여부</th>
+          <th class="col-subj">연구대상</th>
+          <th class="col-var">독립변수1 → 종속변수1</th>
+          <th class="col-var">독립변수2 → 종속변수2</th>
+          <th class="col-var">독립변수3 → 종속변수3</th>
+          <th class="col-mod">조절/매개변수</th>
+          <th class="col-quant">양적분석</th>
+          <th class="col-qual">질적분석</th>
+          <th class="col-result">주요 연구결과</th>
+          <th class="col-limit">연구한계</th>
+          <th class="col-sugg">연구제언</th>
+          <th class="col-link">파일 링크</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- 국외 1 -->
+        <tr>
+          <td class="col-no">1</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">Caplan, R. &amp; Gillespie, T.</td>
+          <td class="col-title">Tiered governance and demonetization: The shifting terms of labor and compensation in the platform economy</td>
+          <td class="col-year">2020</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 플랫폼 정책 및 크리에이터 노동 구조</td>
+          <td class="col-var">플랫폼 거버넌스 등급 → 크리에이터 수익 보상 조건</td>
+          <td class="col-var">Demonetization 정책 → 노동 불안정성(Precarity)</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">플랫폼 등급(Tier) 구조</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">유튜브는 크리에이터를 등급별로 차별화하여 규칙·자원·보상을 다르게 제공. Demonetization이 크리에이터 노동의 불안정성을 심화시키는 핵심 메커니즘임을 규명.</td>
+          <td class="col-limit">정량적 데이터 부재. AI 생성 콘텐츠 등장 이전의 연구로 현재 맥락 반영 부족.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 확산 이후 Demonetization 정책 변화에 대한 후속 실증 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/2056305120936636" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 2 -->
+        <tr>
+          <td class="col-no">2</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-conf">학술대회</span></td>
+          <td class="col-auth">Dunna, A., Lee, C. &amp; Naous, T.</td>
+          <td class="col-title">Paying attention to the algorithm behind the curtain: Bringing transparency to YouTube's demonetization algorithms</td>
+          <td class="col-year">2022</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 크리에이터 채널 대규모 데이터셋</td>
+          <td class="col-var">콘텐츠 유형/주제 → Demonetization 발생률</td>
+          <td class="col-var">알고리즘 투명성 → 크리에이터 인식</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">콘텐츠 카테고리, 채널 규모</td>
+          <td class="col-quant"><span class="check-y">✓</span></td>
+          <td class="col-qual"><span class="check-n">✗</span></td>
+          <td class="col-result">유튜브 Demonetization 알고리즘의 패턴 측정. 특정 주제(정치·사회적 콘텐츠)에서 Demonetization 비율이 유의하게 높음. 알고리즘 투명성이 매우 부족함을 실증.</td>
+          <td class="col-limit">알고리즘 내부 로직 직접 접근 불가. 일부 채널 데이터 편향 가능성.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 채널의 Demonetization 패턴 비교 연구 및 알고리즘 감사 방법론 고도화 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://dl.acm.org/doi/10.1145/3555209" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 3 -->
+        <tr>
+          <td class="col-no">3</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-conf">학술대회</span></td>
+          <td class="col-auth">Hua, Y., Horta Ribeiro, M., Ristenpart, T., West, R. &amp; Naaman, M.</td>
+          <td class="col-title">Characterizing alternative monetization strategies of disinformation on YouTube</td>
+          <td class="col-year">2022</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 인기 크리에이터 채널 (종단 대규모 데이터셋)</td>
+          <td class="col-var">Demonetization 정책 적용 → 대안 수익화 전략 채택</td>
+          <td class="col-var">채널 유형(정상/문제적) → 수익화 전략 다양성</td>
+          <td class="col-var">대안 수익화 도입 → 채널 생산성 변화</td>
+          <td class="col-mod">채널 규모, 콘텐츠 유형(Alt-right 등)</td>
+          <td class="col-quant"><span class="check-y">✓</span></td>
+          <td class="col-qual"><span class="check-n">✗</span></td>
+          <td class="col-result">전체 영상의 18%, 채널의 61%가 외부 수익화 전략 활용. 문제적 채널이 일반 채널보다 더 다양한 대안 수익화 전략 사용. 대안 수익화 도입 채널이 더 높은 생산성 보임.</td>
+          <td class="col-limit">영어권 채널 중심. AI 생성 콘텐츠 특성 미반영. 인과관계 추론의 한계.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 채널의 대안 수익화 전략 패턴 분석 및 비영어권(한국 등) 비교 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://dl.acm.org/doi/10.1145/3555174" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 4 -->
+        <tr>
+          <td class="col-no">4</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">Rieder, B., Matamoros-Fernández, A. &amp; Coromina, Ò.</td>
+          <td class="col-title">Making a living in the creator economy: A large-scale study of linking on YouTube</td>
+          <td class="col-year">2023</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 크리에이터 대규모 채널 데이터 (링크 패턴 분석)</td>
+          <td class="col-var">링크 수익화 전략 → 크리에이터 경제적 성과</td>
+          <td class="col-var">채널 유형/규모 → 수익화 전략 다양성</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">채널 카테고리, 구독자 규모</td>
+          <td class="col-quant"><span class="check-y">✓</span></td>
+          <td class="col-qual"><span class="check-n">✗</span></td>
+          <td class="col-result">크리에이터 경제는 소수 상위 채널에 집중되는 불평등 구조. 링크 기반 수익화는 채널 규모와 유형에 따라 크게 차별화됨. MCN 참여 채널이 더 다양한 수익화 활용.</td>
+          <td class="col-limit">생성형 AI 도구 도입 이전 데이터 기반. 수익의 직접 측정 불가.</td>
+          <td class="col-sugg">AI 도구 도입 이후 크리에이터 경제 구조 변화 추적 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/20563051231180628" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 5 -->
+        <tr>
+          <td class="col-no">5</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">Kopf, S.</td>
+          <td class="col-title">"Rewarding good creators": Corporate social media discourse on monetization schemes for content creators</td>
+          <td class="col-year">2020</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브·트위치·인스타그램 플랫폼의 공식 정책 담론 텍스트</td>
+          <td class="col-var">플랫폼 수익화 담론 → 크리에이터 정체성 구성</td>
+          <td class="col-var">플랫폼 언어 전략 → 권력 관계 재생산</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">플랫폼 유형(유튜브/트위치/인스타)</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">플랫폼은 '좋은 크리에이터' 담론을 통해 노동을 통제. 수익화 정책이 크리에이터를 기업가로 재구성하는 이데올로기적 기능 수행. 플랫폼별 담론 전략 차별화됨.</td>
+          <td class="col-limit">담론 분석으로 정량적 인과관계 검증 불가. 영어권 텍스트만 분석.</td>
+          <td class="col-sugg">비영어권 플랫폼 정책 담론 및 AI 생성 콘텐츠 시대의 새로운 수익화 담론 분석 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/2056305120969877" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 6 -->
+        <tr>
+          <td class="col-no">6</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-conf">학술대회</span></td>
+          <td class="col-auth">Van Natta, M., Masadeh, S. &amp; Hamilton, B.</td>
+          <td class="col-title">Investigating the impacts of YouTube's content policies on journalism and political discourse</td>
+          <td class="col-year">2023</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 저널리스트 및 정치 크리에이터 (인터뷰)</td>
+          <td class="col-var">유튜브 콘텐츠 정책 → 저널리즘 콘텐츠 생산 방식</td>
+          <td class="col-var">Demonetization/삭제 경험 → 크리에이터 자기검열</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">채널 유형(저널리즘/정치)</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">플랫폼 정책이 저널리즘 콘텐츠의 자기검열을 유발. Demonetization이 콘텐츠 주제 선택에 직접적 영향. 크리에이터들은 정책 불투명성에 대한 높은 불만 보유.</td>
+          <td class="col-limit">소규모 인터뷰 기반으로 일반화 제한. 저널리즘 크리에이터 특화로 AI 크리에이터 적용 어려움.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 크리에이터를 대상으로 한 유사 질적 연구 및 대규모 설문조사 병행 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://dl.acm.org/doi/abs/10.1145/3579499" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국외 7 -->
+        <tr>
+          <td class="col-no">7</td>
+          <td class="col-div"><span class="badge-int">국외</span></td>
+          <td class="col-type"><span class="badge-wp">워킹페이퍼</span></td>
+          <td class="col-auth">Zhu, K.</td>
+          <td class="col-title">Rethinking content monetization on digital platforms: A framework for a sustainable creator economy</td>
+          <td class="col-year">2025</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">디지털 플랫폼 수익화 정책 구조 (이론 연구)</td>
+          <td class="col-var">플랫폼 수익화 정책 설계 → 크리에이터 경제 지속가능성</td>
+          <td class="col-var">AI 도구 도입 → 콘텐츠 수익화 구조 변화</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">플랫폼 유형, 크리에이터 규모</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">AI 시대 플랫폼 수익화 정책의 지속가능성 위기 진단. 크리에이터-플랫폼 간 공정 수익 배분을 위한 정책 프레임워크 제안. 규제 개입의 필요성 강조.</td>
+          <td class="col-limit">워킹페이퍼 단계로 동료 심사 미완료. 실증 데이터 없는 이론 중심 연구.</td>
+          <td class="col-sugg">제안된 프레임워크의 실증적 검증 연구 및 국가별 정책 비교 적용 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://ssrn.com/abstract=5296867" target="_blank">🔗 열기</a></td>
+        </tr>
+
+        <!-- 국내 1 -->
+        <tr>
+          <td class="col-no">8</td>
+          <td class="col-div"><span class="badge-kor">국내</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">정재민</td>
+          <td class="col-title">수익 창출 측면에서의 유튜브 역사 분석: 유튜브와 크리에이터 영상 수익 공유를 중심으로</td>
+          <td class="col-year">2016</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 수익 창출 구조·역사, MCN 사례(JustKiddingFilms 등)</td>
+          <td class="col-var">유튜브 광고 수익 공유 정책 → 크리에이터 수익 규모</td>
+          <td class="col-var">MCN 활용 여부 → 수익 다변화 수준</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">채널 유형(오리지널/MCN 소속)</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">유튜브 수익의 55%가 크리에이터에게 분배(구글 컷 45%). MCN과 오프라인 사업 결합이 수익 증진에 효과적. 유튜브 레드 등 다양한 수익 포트폴리오 확대 추세 확인.</td>
+          <td class="col-limit">2016년 이전 데이터로 현 시점 적용 한계. 정량적 수익 데이터 직접 확보 불가.</td>
+          <td class="col-sugg">AI 콘텐츠 시대 유튜브 수익 구조 변화에 대한 최신 후속 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002134441" target="_blank">🔗 KCI</a></td>
+        </tr>
+
+        <!-- 국내 2 -->
+        <tr>
+          <td class="col-no">9</td>
+          <td class="col-div"><span class="badge-kor">국내</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">김대원, 조창환</td>
+          <td class="col-title">1인 미디어 창작자의 플랫폼 선택에 영향을 미치는 요인 연구: 유튜브, 아프리카TV, 트위치를 중심으로</td>
+          <td class="col-year">2022</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">한국 1인 미디어 창작자 (유튜브·아프리카TV·트위치)</td>
+          <td class="col-var">알고리즘 기반 적합도 → 유튜브 플랫폼 선택</td>
+          <td class="col-var">수익 창출 동기 → 아프리카TV 선택</td>
+          <td class="col-var">경력 개발 동기 → 플랫폼 선택</td>
+          <td class="col-mod">창작자 주력 장르, 방송 유형(생방송/녹화)</td>
+          <td class="col-quant"><span class="check-y">✓</span></td>
+          <td class="col-qual"><span class="check-n">✗</span></td>
+          <td class="col-result">알고리즘 기반 적합도·경력 개발 동기 창작자는 유튜브 선호. 수익 창출·상호작용 동기 창작자는 아프리카TV 선호. 장르·방송 유형의 조절 효과 일부 유의.</td>
+          <td class="col-limit">특정 시점 횡단면 자료. AI 크리에이터 유형 미포함. 자기보고 설문 한계.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 운영 크리에이터의 플랫폼 선택 패턴 비교 연구 및 종단적 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002862696" target="_blank">🔗 KCI</a></td>
+        </tr>
+
+        <!-- 국내 3 -->
+        <tr>
+          <td class="col-no">10</td>
+          <td class="col-div"><span class="badge-kor">국내</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">이정훈, 박성복</td>
+          <td class="col-title">머신러닝 분류기법을 활용한 신생 유튜버의 생존 및 수익창출에 관한 연구</td>
+          <td class="col-year">2023</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브 과학기술 카테고리 신생 채널 데이터</td>
+          <td class="col-var">평균 업로드 횟수 → 수익 창출 성공 여부</td>
+          <td class="col-var">다국어 자막 개수 → 수익 창출 성공 여부</td>
+          <td class="col-var">SNS 연동 채널 수 → 수익 창출 성공 여부</td>
+          <td class="col-mod">인공 신경망 알고리즘 분류 모델</td>
+          <td class="col-quant"><span class="check-y">✓</span></td>
+          <td class="col-qual"><span class="check-n">✗</span></td>
+          <td class="col-result">인공 신경망 알고리즘이 수익 창출 성공 예측에 가장 높은 정확도. 5가지 요인(업로드 빈도·영상 길이·자막·SNS 연동 등)이 수익 창출에 유의한 영향.</td>
+          <td class="col-limit">과학기술 카테고리만 분석하여 일반화 제한. AI 자동화 채널 특성 미고려.</td>
+          <td class="col-sugg">AI 생성 콘텐츠 채널을 포함한 크리에이터 수익 창출 예측 모델 확장 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002964626" target="_blank">🔗 KCI</a></td>
+        </tr>
+
+        <!-- 국내 4 -->
+        <tr>
+          <td class="col-no">11</td>
+          <td class="col-div"><span class="badge-kor">국내</span></td>
+          <td class="col-type"><span class="badge-journal">학술지</span></td>
+          <td class="col-auth">정다영</td>
+          <td class="col-title">디지털 플랫폼의 콘텐츠 추천 알고리즘과 법적 책임</td>
+          <td class="col-year">2024</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">EU·미국·독일·영국·일본·한국 플랫폼 알고리즘 규제 법령</td>
+          <td class="col-var">알고리즘 투명성 수준 → 플랫폼 법적 책임 범위</td>
+          <td class="col-var">국가별 규제 체계 → 사용자 보호 수준</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">플랫폼 규모, 국가별 법제 환경</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">알고리즘 불투명성·책임 소재 모호성이 핵심 문제. EU DSA 등 선진 규제 분석. 한국의 알고리즘 투명성 보고제도 도입 및 단계적 공개 방안 제언.</td>
+          <td class="col-limit">법학적 분석으로 실증 데이터 부재. AI 생성 콘텐츠 Demonetization 특수성 미반영.</td>
+          <td class="col-sugg">AI 콘텐츠 Demonetization 알고리즘의 법적 책임 기준 마련 및 한국 플랫폼 공정화법 개정 방향 연구 필요.</td>
+          <td class="col-link"><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003159812" target="_blank">🔗 KCI</a></td>
+        </tr>
+
+        <!-- 국내 5 -->
+        <tr>
+          <td class="col-no">12</td>
+          <td class="col-div"><span class="badge-kor">국내</span></td>
+          <td class="col-type"><span class="badge-report">연구보고서</span></td>
+          <td class="col-auth">정보통신정책연구원 (KISDI)</td>
+          <td class="col-title">넷플릭스 및 유튜브 생성형 AI 활용 가이드라인 동향 분석</td>
+          <td class="col-year">2026</td>
+          <td class="col-file"><span class="check-y">✓</span></td>
+          <td class="col-subj">유튜브·넷플릭스의 생성형 AI 콘텐츠 관리 정책</td>
+          <td class="col-var">AI 콘텐츠 가이드라인 → 수익 창출 제재 적용 범위</td>
+          <td class="col-var">AI 사용 공지 의무화 → 플랫폼 콘텐츠 관리 효과</td>
+          <td class="col-var">—</td>
+          <td class="col-mod">플랫폼 유형(유튜브/넷플릭스)</td>
+          <td class="col-quant"><span class="check-n">✗</span></td>
+          <td class="col-qual"><span class="check-y">✓</span></td>
+          <td class="col-result">유튜브는 2025년 5월부터 AI 생성·변형 콘텐츠 공지 의무화. 위반 시 콘텐츠 삭제 또는 수익 창출 정책 제재. 넷플릭스와 달리 유튜브는 크리에이터 중심 정책 구조 채택.</td>
+          <td class="col-limit">정책 분석 보고서로 실증 연구 한계. 정책 시행 초기 단계 분석으로 장기 효과 불명확.</td>
+          <td class="col-sugg">AI 콘텐츠 공지 의무화 정책의 실효성 검증 연구 및 크리에이터 대응 행동 변화 실증 분석 필요.</td>
+          <td class="col-link"><a class="link-btn" href="http://www.kisdi.re.kr/bbs/view.do?key=m2101113055776&bbsSn=114904" target="_blank">🔗 KISDI</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 국외 탭 -->
+<div class="tab-panel" id="tab-int">
+  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국외 문헌 7편 — 전체 탭과 동일한 항목, 국외만 필터</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-no">No.</th>
+          <th class="col-type">논문종류</th>
+          <th class="col-auth">저자</th>
+          <th class="col-title">논문제목</th>
+          <th class="col-year">발행연도</th>
+          <th class="col-file">파일여부</th>
+          <th class="col-subj">연구대상</th>
+          <th class="col-var">독립변수1 → 종속변수1</th>
+          <th class="col-var">독립변수2 → 종속변수2</th>
+          <th class="col-mod">조절/매개변수</th>
+          <th class="col-quant">양적</th>
+          <th class="col-qual">질적</th>
+          <th class="col-result">주요 연구결과</th>
+          <th class="col-limit">연구한계</th>
+          <th class="col-sugg">연구제언</th>
+          <th class="col-link">파일 링크</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><span class="badge-journal">학술지</span></td><td>Caplan &amp; Gillespie</td><td>Tiered governance and demonetization</td><td>2020</td><td><span class="check-y">✓</span></td><td>유튜브 플랫폼 정책 구조</td><td>거버넌스 등급 → 수익 보상 조건</td><td>Demonetization → 노동 불안정성</td><td>플랫폼 Tier 구조</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>Demonetization이 크리에이터 노동 불안정성 심화</td><td>AI 생성 콘텐츠 미반영</td><td>AI 시대 후속 실증 연구 필요</td><td><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/2056305120936636" target="_blank">🔗</a></td></tr>
+        <tr><td>2</td><td><span class="badge-conf">학술대회</span></td><td>Dunna et al.</td><td>Paying attention to the algorithm behind the curtain</td><td>2022</td><td><span class="check-y">✓</span></td><td>유튜브 크리에이터 채널 데이터</td><td>콘텐츠 유형 → Demonetization 발생률</td><td>알고리즘 투명성 → 크리에이터 인식</td><td>콘텐츠 카테고리</td><td><span class="check-y">✓</span></td><td><span class="check-n">✗</span></td><td>정치·사회 콘텐츠에서 Demonetization 비율 유의하게 높음</td><td>알고리즘 내부 접근 불가</td><td>AI 채널 Demonetization 비교 연구 필요</td><td><a class="link-btn" href="https://dl.acm.org/doi/10.1145/3555209" target="_blank">🔗</a></td></tr>
+        <tr><td>3</td><td><span class="badge-conf">학술대회</span></td><td>Hua et al.</td><td>Characterizing alternative monetization strategies</td><td>2022</td><td><span class="check-y">✓</span></td><td>유튜브 인기 채널 종단 데이터</td><td>Demonetization → 대안 수익화 채택</td><td>채널 유형 → 수익화 다양성</td><td>채널 규모</td><td><span class="check-y">✓</span></td><td><span class="check-n">✗</span></td><td>18% 영상, 61% 채널이 외부 수익화 활용. 문제 채널이 더 다양한 전략 사용</td><td>AI 생성 콘텐츠 미반영</td><td>AI 채널·비영어권 비교 연구 필요</td><td><a class="link-btn" href="https://dl.acm.org/doi/10.1145/3555174" target="_blank">🔗</a></td></tr>
+        <tr><td>4</td><td><span class="badge-journal">학술지</span></td><td>Rieder et al.</td><td>Making a living in the creator economy</td><td>2023</td><td><span class="check-y">✓</span></td><td>유튜브 크리에이터 채널 링크 데이터</td><td>링크 수익화 전략 → 경제적 성과</td><td>채널 유형·규모 → 전략 다양성</td><td>채널 카테고리</td><td><span class="check-y">✓</span></td><td><span class="check-n">✗</span></td><td>크리에이터 경제의 소수 집중 불평등 구조 확인</td><td>AI 도구 이전 데이터</td><td>AI 도입 후 구조 변화 추적 필요</td><td><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/20563051231180628" target="_blank">🔗</a></td></tr>
+        <tr><td>5</td><td><span class="badge-journal">학술지</span></td><td>Kopf, S.</td><td>"Rewarding good creators"</td><td>2020</td><td><span class="check-y">✓</span></td><td>플랫폼 공식 정책 담론 텍스트</td><td>플랫폼 담론 → 크리에이터 정체성 구성</td><td>언어 전략 → 권력 관계 재생산</td><td>플랫폼 유형</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>'좋은 크리에이터' 담론으로 노동 통제. 수익화 정책의 이데올로기적 기능</td><td>영어권 텍스트만 분석</td><td>AI 시대 새로운 수익화 담론 분석 필요</td><td><a class="link-btn" href="https://journals.sagepub.com/doi/10.1177/2056305120969877" target="_blank">🔗</a></td></tr>
+        <tr><td>6</td><td><span class="badge-conf">학술대회</span></td><td>Van Natta et al.</td><td>Investigating impacts of YouTube's content policies on journalism</td><td>2023</td><td><span class="check-y">✓</span></td><td>유튜브 저널리스트·정치 크리에이터</td><td>콘텐츠 정책 → 저널리즘 생산 방식</td><td>Demonetization 경험 → 자기검열</td><td>채널 유형</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>Demonetization이 콘텐츠 주제 선택에 직접 영향. 크리에이터 불만 높음</td><td>소규모 인터뷰, AI 크리에이터 미포함</td><td>AI 크리에이터 대상 확장 연구 필요</td><td><a class="link-btn" href="https://dl.acm.org/doi/abs/10.1145/3579499" target="_blank">🔗</a></td></tr>
+        <tr><td>7</td><td><span class="badge-wp">워킹페이퍼</span></td><td>Zhu, K.</td><td>Rethinking content monetization on digital platforms</td><td>2025</td><td><span class="check-y">✓</span></td><td>디지털 플랫폼 수익화 정책 구조 (이론)</td><td>정책 설계 → 크리에이터 경제 지속가능성</td><td>AI 도구 도입 → 수익화 구조 변화</td><td>플랫폼 유형</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>AI 시대 수익화 지속가능성 위기. 공정 배분 정책 프레임워크 제안</td><td>동료 심사 미완료, 실증 데이터 없음</td><td>실증 검증 및 국가별 정책 비교 필요</td><td><a class="link-btn" href="https://ssrn.com/abstract=5296867" target="_blank">🔗</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 국내 탭 -->
+<div class="tab-panel" id="tab-kor">
+  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국내 문헌 5편 — KCI 등재 또는 정부 연구보고서</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-no">No.</th>
+          <th class="col-type">논문종류</th>
+          <th class="col-auth">저자</th>
+          <th class="col-title">논문제목</th>
+          <th class="col-year">발행연도</th>
+          <th class="col-file">파일여부</th>
+          <th class="col-subj">연구대상</th>
+          <th class="col-var">독립변수1 → 종속변수1</th>
+          <th class="col-var">독립변수2 → 종속변수2</th>
+          <th class="col-mod">조절/매개변수</th>
+          <th class="col-quant">양적</th>
+          <th class="col-qual">질적</th>
+          <th class="col-result">주요 연구결과</th>
+          <th class="col-limit">연구한계</th>
+          <th class="col-sugg">연구제언</th>
+          <th class="col-link">파일 링크</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><span class="badge-journal">학술지</span></td><td>정재민</td><td>수익 창출 측면에서의 유튜브 역사 분석</td><td>2016</td><td><span class="check-y">✓</span></td><td>유튜브 수익 창출 구조·역사, MCN 사례</td><td>광고 수익 공유 정책 → 크리에이터 수익</td><td>MCN 활용 여부 → 수익 다변화</td><td>채널 유형</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>수익의 55% 크리에이터 배분. MCN+오프라인 결합이 수익 증진에 효과적</td><td>2016년 이전 데이터, 정량 수익 직접 측정 불가</td><td>AI 시대 수익 구조 변화 후속 연구 필요</td><td><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002134441" target="_blank">🔗 KCI</a></td></tr>
+        <tr><td>2</td><td><span class="badge-journal">학술지</span></td><td>김대원, 조창환</td><td>1인 미디어 창작자의 플랫폼 선택에 영향을 미치는 요인 연구</td><td>2022</td><td><span class="check-y">✓</span></td><td>한국 1인 미디어 창작자</td><td>알고리즘 적합도 → 유튜브 선택</td><td>수익 창출 동기 → 아프리카TV 선택</td><td>장르·방송 유형</td><td><span class="check-y">✓</span></td><td><span class="check-n">✗</span></td><td>알고리즘 적합도·경력개발 동기 → 유튜브 선호 확인</td><td>AI 크리에이터 미포함, 횡단 자료</td><td>AI 채널 창작자 플랫폼 선택 비교 연구 필요</td><td><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002862696" target="_blank">🔗 KCI</a></td></tr>
+        <tr><td>3</td><td><span class="badge-journal">학술지</span></td><td>이정훈, 박성복</td><td>머신러닝 분류기법을 활용한 신생 유튜버의 생존 및 수익창출에 관한 연구</td><td>2023</td><td><span class="check-y">✓</span></td><td>유튜브 과학기술 카테고리 신생 채널</td><td>업로드 빈도 → 수익 창출 성공</td><td>다국어 자막 개수 → 수익 창출 성공</td><td>인공 신경망 분류 모델</td><td><span class="check-y">✓</span></td><td><span class="check-n">✗</span></td><td>인공 신경망이 수익 창출 예측 정확도 최고. 5가지 채널 요인 유의</td><td>과학기술 카테고리만 분석, AI 채널 미포함</td><td>AI 생성 콘텐츠 채널 수익 예측 모델 확장 필요</td><td><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002964626" target="_blank">🔗 KCI</a></td></tr>
+        <tr><td>4</td><td><span class="badge-journal">학술지</span></td><td>정다영</td><td>디지털 플랫폼의 콘텐츠 추천 알고리즘과 법적 책임</td><td>2024</td><td><span class="check-y">✓</span></td><td>EU·미국·한국 플랫폼 알고리즘 규제 법령</td><td>알고리즘 투명성 → 플랫폼 법적 책임</td><td>국가별 규제 체계 → 사용자 보호 수준</td><td>플랫폼 규모·법제 환경</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>알고리즘 불투명성이 핵심 문제. 한국 투명성 보고제도 도입 제언</td><td>법학적 분석, AI Demonetization 특수성 미반영</td><td>AI Demonetization 법적 책임 기준 마련 필요</td><td><a class="link-btn" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003159812" target="_blank">🔗 KCI</a></td></tr>
+        <tr><td>5</td><td><span class="badge-report">연구보고서</span></td><td>KISDI</td><td>넷플릭스 및 유튜브 생성형 AI 활용 가이드라인 동향 분석</td><td>2026</td><td><span class="check-y">✓</span></td><td>유튜브·넷플릭스 AI 콘텐츠 관리 정책</td><td>AI 콘텐츠 가이드라인 → 수익 창출 제재 범위</td><td>AI 공지 의무화 → 콘텐츠 관리 효과</td><td>플랫폼 유형</td><td><span class="check-n">✗</span></td><td><span class="check-y">✓</span></td><td>유튜브 AI 콘텐츠 공지 의무화·위반 시 수익 제재. 크리에이터 중심 정책 구조</td><td>정책 초기 단계 분석, 장기 효과 불명확</td><td>공지 의무화 정책 실효성 검증 연구 필요</td><td><a class="link-btn" href="http://www.kisdi.re.kr/bbs/view.do?key=m2101113055776&bbsSn=114904" target="_blank">🔗 KISDI</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// CSV 내보내기
+function exportCSV() {
+  const table = document.querySelector('#table-all');
+  let csv = '';
+  for (const row of table.rows) {
+    const cols = Array.from(row.cells).map(td => {
+      let text = td.innerText.replace(/\n/g, ' ').replace(/"/g, '""');
+      return '"' + text + '"';
+    });
+    csv += cols.join(',') + '\n';
+  }
+  const bom = '\uFEFF'; // UTF-8 BOM for Excel Korean
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '문헌데이터베이스_김재환.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// Notion 복사 (탭 구분 텍스트 — Notion DB에 붙여넣기 가능)
+function copyNotion() {
+  const table = document.querySelector('#table-all');
+  let tsv = '';
+  for (const row of table.rows) {
+    const cols = Array.from(row.cells).map(td => td.innerText.replace(/\n/g, ' ').trim());
+    tsv += cols.join('\t') + '\n';
+  }
+  navigator.clipboard.writeText(tsv).then(() => {
+    const btn = document.querySelector('.btn-notion');
+    btn.textContent = '✅ 복사됨!';
+    btn.style.background = '#27ae60';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = '📋 Notion 복사';
+      btn.style.background = '#ffffff';
+      btn.style.color = '#333';
+    }, 2000);
+  }).catch(() => {
+    alert('복사에 실패했습니다. 브라우저 권한을 확인해 주세요.');
+  });
+}: 테이블 위에 있을 때 내부 스크롤 우선 처리
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.table-wrap').forEach(function(wrap) {
+
+    // 마우스 휠로 상하/좌우 스크롤
+    wrap.addEventListener('wheel', function(e) {
+      e.stopPropagation();
+
+      // Shift+휠 = 좌우 스크롤, 일반 휠 = 상하 스크롤
+      if (e.shiftKey) {
+        wrap.scrollLeft += e.deltaY;
+      } else {
+        // 상하 스크롤 먼저, 끝에 닿으면 좌우 전환
+        var atTop    = wrap.scrollTop === 0;
+        var atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 1;
+
+        if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+          wrap.scrollLeft += e.deltaY;
+        } else {
+          wrap.scrollTop += e.deltaY;
+        }
+      }
+      e.preventDefault();
+    }, { passive: false });
+
+    // 드래그로 좌우 스크롤 (클릭+드래그)
+    var isDown = false;
+    var startX, startY, scrollLeft, scrollTop;
+
+    wrap.addEventListener('mousedown', function(e) {
+      // 링크 버튼 클릭은 드래그 제외
+      if (e.target.tagName === 'A') return;
+      isDown = true;
+      wrap.style.cursor = 'grabbing';
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      scrollLeft = wrap.scrollLeft;
+      scrollTop  = wrap.scrollTop;
+    });
+
+    wrap.addEventListener('mouseleave', function() {
+      isDown = false;
+      wrap.style.cursor = 'default';
+    });
+
+    wrap.addEventListener('mouseup', function() {
+      isDown = false;
+      wrap.style.cursor = 'default';
+    });
+
+    wrap.addEventListener('mousemove', function(e) {
+      if (!isDown) return;
+      e.preventDefault();
+      var x = e.pageX - wrap.offsetLeft;
+      var y = e.pageY - wrap.offsetTop;
+      var walkX = (x - startX) * 1.5;
+      var walkY = (y - startY) * 1.5;
+      wrap.scrollLeft = scrollLeft - walkX;
+      wrap.scrollTop  = scrollTop  - walkY;
+    });
+  });
+});
+</script>
+</body>
+</html>

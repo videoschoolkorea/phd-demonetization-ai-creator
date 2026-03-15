@@ -1,0 +1,28 @@
+# 민감 정보 / 보안
+*.env
+.env*
+*secret*
+*token*
+*api_key*
+*password*
+config/secrets.*
+.openclaw/
+
+# 개인정보 포함 가능 파일
+USER.md
+HEARTBEAT.md
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+__pycache__/
+*.pyc
+node_modules/
+
+# 바이너리 (대용량)
+*.mp4
+*.mp3
+*.wav
+*.zip
