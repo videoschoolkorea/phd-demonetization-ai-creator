@@ -225,6 +225,7 @@
     display: flex;
     gap: 16px;
     margin-bottom: 14px;
+    flex-wrap: wrap;
   }
   .stat-card {
     background: white;
@@ -235,6 +236,83 @@
   }
   .stat-card .num { font-size: 22px; font-weight: 700; color: #1a3a6c; }
   .stat-card .lbl { font-size: 10px; color: #888; margin-top: 2px; }
+
+  /* ─── 필터 바 ─── */
+  .filter-bar {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .filter-label { font-size: 11px; font-weight: 700; color: #1a3a6c; white-space: nowrap; }
+  .filter-group { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .fg-label { font-size: 10px; color: #999; font-weight: 600; white-space: nowrap; }
+  .filter-divider { width: 1px; height: 22px; background: #dde3f0; margin: 0 2px; }
+  .filter-chip {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 2px solid transparent;
+    transition: all 0.15s; user-select: none;
+    background: #f0f3fa; color: #666;
+  }
+  .filter-chip:hover { border-color: #2c508f; color: #1a3a6c; }
+  .filter-chip.active        { background: #1a3a6c; color: white; border-color: #1a3a6c; }
+  .fc-kor.active  { background: #0055a4 !important; border-color: #0055a4 !important; }
+  .fc-int.active  { background: #c0392b !important; border-color: #c0392b !important; }
+  .fc-journal.active { background: #27ae60 !important; border-color: #27ae60 !important; }
+  .fc-conf.active    { background: #8e44ad !important; border-color: #8e44ad !important; }
+  .fc-report.active  { background: #e67e22 !important; border-color: #e67e22 !important; }
+  .fc-wp.active      { background: #7f8c8d !important; border-color: #7f8c8d !important; }
+  .fc-quant.active   { background: #17a2b8 !important; border-color: #17a2b8 !important; }
+  .fc-qual.active    { background: #6610f2 !important; border-color: #6610f2 !important; }
+
+  .search-box { position: relative; min-width: 180px; max-width: 260px; flex: 1; }
+  .search-box::before { content: '🔍'; position: absolute; left: 9px; top: 4px; font-size: 12px; pointer-events: none; }
+  .search-box input {
+    width: 100%; padding: 5px 10px 5px 28px;
+    border: 2px solid #dde3f0; border-radius: 20px;
+    font-size: 11px; font-family: 'Noto Sans KR', sans-serif;
+    outline: none; transition: border 0.2s;
+  }
+  .search-box input:focus { border-color: #2c508f; }
+
+  .reset-btn {
+    padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 2px solid #e74c3c; background: white; color: #e74c3c;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .reset-btn:hover { background: #e74c3c; color: white; }
+
+  /* ─── 정렬 바 ─── */
+  .sort-bar {
+    background: white; border-radius: 10px;
+    padding: 9px 16px; margin-bottom: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .sort-label { font-size: 11px; font-weight: 700; color: #1a3a6c; white-space: nowrap; }
+  .sort-btn {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 4px 11px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    border: 2px solid #dde3f0; background: white; color: #555;
+    transition: all 0.15s; user-select: none; white-space: nowrap;
+  }
+  .sort-btn:hover { border-color: #2c508f; color: #1a3a6c; }
+  .sort-btn.active-asc  { background: #1a3a6c; color: white; border-color: #1a3a6c; }
+  .sort-btn.active-desc { background: #2c508f; color: white; border-color: #2c508f; }
+
+  .result-count { font-size: 11px; color: #888; margin-left: auto; white-space: nowrap; }
+  .result-count strong { color: #1a3a6c; font-size: 14px; }
+
+  tr.hidden-row { display: none !important; }
+  mark { background: #fff176; border-radius: 2px; padding: 0 1px; }
 </style>
 </head>
 <body>
@@ -260,6 +338,72 @@
 
 <!-- 전체 탭 -->
 <div class="tab-panel active" id="tab-all">
+
+  <!-- ═══ 필터 바 ═══ -->
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">🔍 필터</span>
+
+    <div class="filter-group">
+      <span class="fg-label">구분</span>
+      <span class="filter-chip active" data-filter="div" data-val="all" onclick="toggleChip(this,'div')">전체</span>
+      <span class="filter-chip fc-int" data-filter="div" data-val="국외" onclick="toggleChip(this,'div')">국외</span>
+      <span class="filter-chip fc-kor" data-filter="div" data-val="국내" onclick="toggleChip(this,'div')">국내</span>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="fg-label">유형</span>
+      <span class="filter-chip active" data-filter="type" data-val="all" onclick="toggleChip(this,'type')">전체</span>
+      <span class="filter-chip fc-journal" data-filter="type" data-val="학술지" onclick="toggleChip(this,'type')">학술지</span>
+      <span class="filter-chip fc-conf" data-filter="type" data-val="학술대회" onclick="toggleChip(this,'type')">학술대회</span>
+      <span class="filter-chip fc-report" data-filter="type" data-val="연구보고서" onclick="toggleChip(this,'type')">보고서</span>
+      <span class="filter-chip fc-report" data-filter="type" data-val="언론보도" onclick="toggleChip(this,'type')">언론보도</span>
+      <span class="filter-chip fc-wp" data-filter="type" data-val="워킹페이퍼" onclick="toggleChip(this,'type')">워킹페이퍼</span>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="fg-label">방법</span>
+      <span class="filter-chip active" data-filter="method" data-val="all" onclick="toggleChip(this,'method')">전체</span>
+      <span class="filter-chip fc-quant" data-filter="method" data-val="quant" onclick="toggleChip(this,'method')">양적분석</span>
+      <span class="filter-chip fc-qual" data-filter="method" data-val="qual" onclick="toggleChip(this,'method')">질적분석</span>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="fg-label">연도</span>
+      <span class="filter-chip active" data-filter="year" data-val="all" onclick="toggleChip(this,'year')">전체</span>
+      <span class="filter-chip" data-filter="year" data-val="2016-2020" onclick="toggleChip(this,'year')">2016–2020</span>
+      <span class="filter-chip" data-filter="year" data-val="2021-2023" onclick="toggleChip(this,'year')">2021–2023</span>
+      <span class="filter-chip" data-filter="year" data-val="2024-2026" onclick="toggleChip(this,'year')">2024–2026</span>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="저자·제목·키워드 검색…" oninput="applyFilters()">
+    </div>
+
+    <button class="reset-btn" onclick="resetFilters()">↺ 초기화</button>
+
+    <span class="result-count" id="resultCount"><strong>14</strong> / 14편</span>
+  </div>
+
+  <!-- ═══ 정렬 바 ═══ -->
+  <div class="sort-bar" id="sort-bar">
+    <span class="sort-label">⇅ 정렬</span>
+    <button class="sort-btn active-asc" data-col="0" data-dir="asc" onclick="sortTable(this,0)">No. ↑</button>
+    <button class="sort-btn" data-col="3" data-dir="none" onclick="sortTable(this,3)">저자</button>
+    <button class="sort-btn" data-col="5" data-dir="none" onclick="sortTable(this,5)">연도 ↑</button>
+    <button class="sort-btn" data-col="1" data-dir="none" onclick="sortTable(this,1)">구분(국내/국외)</button>
+    <button class="sort-btn" data-col="2" data-dir="none" onclick="sortTable(this,2)">유형</button>
+    <button class="sort-btn" data-col="12" data-dir="none" onclick="sortTable(this,12)">양적분석</button>
+    <button class="sort-btn" data-col="13" data-dir="none" onclick="sortTable(this,13)">질적분석</button>
+  </div>
+
   <div class="stats">
     <div class="stat-card"><div class="num">14</div><div class="lbl">총 문헌 수</div></div>
     <div class="stat-card"><div class="num">7</div><div class="lbl">국외 문헌</div></div>
@@ -700,9 +844,141 @@ function showTab(id) {
   event.target.classList.add('active');
 }
 
-// CSV 내보내기
-function exportCSV() {
-  const table = document.querySelector('#table-all');
+/* ═══════════════════════════════════════════
+   필터 상태
+═══════════════════════════════════════════ */
+const filterState = { div: 'all', type: 'all', method: 'all', year: 'all' };
+let sortState = { col: 0, dir: 'asc' };
+
+function toggleChip(chip, filterKey) {
+  // 같은 그룹 칩 초기화
+  document.querySelectorAll(`[data-filter="${filterKey}"]`).forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  filterState[filterKey] = chip.dataset.val;
+  applyFilters();
+}
+
+function resetFilters() {
+  Object.keys(filterState).forEach(k => filterState[k] = 'all');
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.remove('active');
+    if (c.dataset.val === 'all') c.classList.add('active');
+  });
+  document.getElementById('searchInput').value = '';
+  applyFilters();
+}
+
+function applyFilters() {
+  const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+  const tbody = document.querySelector('#table-all tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  let visible = 0;
+
+  rows.forEach(row => {
+    const cells = Array.from(row.cells);
+    if (!cells.length) return;
+
+    const divText  = cells[1]  ? cells[1].innerText  : '';
+    const typeText = cells[2]  ? cells[2].innerText  : '';
+    const yearVal  = cells[5]  ? parseInt(cells[5].innerText) : 0;
+    const quantTxt = cells[12] ? cells[12].innerText : '';
+    const qualTxt  = cells[13] ? cells[13].innerText : '';
+
+    // 구분 필터
+    let pass = true;
+    if (filterState.div !== 'all') {
+      pass = divText.includes(filterState.div);
+    }
+
+    // 유형 필터
+    if (pass && filterState.type !== 'all') {
+      pass = typeText.includes(filterState.type);
+    }
+
+    // 방법 필터
+    if (pass && filterState.method !== 'all') {
+      if (filterState.method === 'quant') pass = quantTxt.includes('✓');
+      else if (filterState.method === 'qual') pass = qualTxt.includes('✓');
+    }
+
+    // 연도 필터
+    if (pass && filterState.year !== 'all') {
+      const [from, to] = filterState.year.split('-').map(Number);
+      pass = (yearVal >= from && yearVal <= to);
+    }
+
+    // 텍스트 검색
+    if (pass && searchVal) {
+      const rowText = row.innerText.toLowerCase();
+      pass = searchVal.split(/\s+/).every(word => rowText.includes(word));
+    }
+
+    row.classList.toggle('hidden-row', !pass);
+    if (pass) visible++;
+  });
+
+  // 결과 카운트 업데이트
+  const countEl = document.getElementById('resultCount');
+  if (countEl) countEl.innerHTML = `<strong>${visible}</strong> / 14편`;
+}
+
+/* ═══════════════════════════════════════════
+   정렬 기능
+═══════════════════════════════════════════ */
+function sortTable(btn, colIdx) {
+  const tbody = document.querySelector('#table-all tbody');
+  const rows  = Array.from(tbody.querySelectorAll('tr:not(.hidden-row)'));
+  const allRows = Array.from(tbody.querySelectorAll('tr'));
+
+  // 방향 결정
+  let dir = 'asc';
+  if (btn.classList.contains('active-asc')) dir = 'desc';
+  else if (btn.classList.contains('active-desc')) dir = 'asc';
+
+  // 모든 버튼 초기화
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    b.classList.remove('active-asc', 'active-desc');
+    b.textContent = b.textContent.replace(/ [↑↓]$/, '');
+  });
+
+  btn.classList.add(dir === 'asc' ? 'active-asc' : 'active-desc');
+  btn.textContent = btn.textContent.replace(/ [↑↓]$/, '') + (dir === 'asc' ? ' ↑' : ' ↓');
+
+  // 전체 행 정렬 (숨긴 행도 포함, 순서만 변경)
+  allRows.sort((a, b) => {
+    const aCell = a.cells[colIdx] ? a.cells[colIdx].innerText.trim() : '';
+    const bCell = b.cells[colIdx] ? b.cells[colIdx].innerText.trim() : '';
+
+    // 숫자형 컬럼 (No., 연도)
+    if (colIdx === 0 || colIdx === 5) {
+      const aNum = parseInt(aCell) || 0;
+      const bNum = parseInt(bCell) || 0;
+      return dir === 'asc' ? aNum - bNum : bNum - aNum;
+    }
+    // 체크(✓/✗) 컬럼
+    if (colIdx === 12 || colIdx === 13) {
+      const aV = aCell.includes('✓') ? 1 : 0;
+      const bV = bCell.includes('✓') ? 1 : 0;
+      return dir === 'asc' ? aV - bV : bV - aV;
+    }
+    // 문자열
+    const cmp = aCell.localeCompare(bCell, 'ko');
+    return dir === 'asc' ? cmp : -cmp;
+  });
+
+  // DOM 재정렬
+  allRows.forEach(r => tbody.appendChild(r));
+
+  // No. 컬럼 재번호 부여 (숨긴 행 제외, 보이는 행만 순번 갱신)
+  let num = 1;
+  allRows.forEach(r => {
+    if (!r.classList.contains('hidden-row') && r.cells[0]) {
+      r.cells[0].textContent = num++;
+    }
+  });
+
+  sortState = { col: colIdx, dir };
+}
   let csv = '';
   for (const row of table.rows) {
     const cols = Array.from(row.cells).map(td => {
@@ -717,6 +993,24 @@ function exportCSV() {
   const a = document.createElement('a');
   a.href = url; a.download = '문헌데이터베이스_김재환.csv';
   a.click(); URL.revokeObjectURL(url);
+}
+
+// ─── CSV 내보내기 ───
+function exportCSV() {
+  const table = document.querySelector('#table-all');
+  let csv = '';
+  for (const row of table.rows) {
+    const cols = Array.from(row.cells).map(td => {
+      let text = td.innerText.replace(/\n/g, ' ').replace(/"/g, '""');
+      return `"${text}"`;
+    });
+    csv += cols.join(',') + '\n';
+  }
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '문헌데이터베이스_김재환.csv';
+  a.click();
 }
 
 // Notion 복사 (탭 구분 텍스트 — Notion DB에 붙여넣기 가능)
