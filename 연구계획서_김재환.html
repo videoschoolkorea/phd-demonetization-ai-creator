@@ -207,7 +207,26 @@
   <tr>
     <th>연구 대상</th>
     <td>
-      한국 유튜브 크리에이터 (AI 생성 콘텐츠 채널 운영자 및 전통 방식 크리에이터), 유튜브 수익 창출 정책 문서 및 커뮤니티 가이드라인 (2020~2026년), 플랫폼 공개 데이터(YouTube Data API)
+      본 연구의 연구 대상은 다음과 같이 세 가지 층위로 구성된다.<br><br>
+
+      <strong>① 한국 유튜브 크리에이터 (인터뷰 대상)</strong><br>
+      &nbsp;- <strong>AI 생성 콘텐츠 채널 운영자 30명</strong>: 생성형 AI 도구(ChatGPT, Sora, ElevenLabs, HeyGen 등)를 활용하여 영상·음성·이미지를 자동 생성하는 'Faceless AI 채널' 운영자. 주당 업로드 3회 이상, 구독자 1,000명 이상인 수익화 채널 운영자 중 목적적 표집(purposive sampling)으로 선정.<br>
+      &nbsp;- <strong>전통 방식 크리에이터 20명</strong>: 직접 촬영·편집·출연 방식의 채널 운영자. AI 크리에이터와 동일 카테고리 내 비교 집단으로 선정.<br><br>
+
+      <strong>② 플랫폼 공개 데이터 (정량 분석 대상)</strong><br>
+      &nbsp;- <strong>YouTube Data API v3</strong>: 채널 통계(구독자 수·조회수·업로드 빈도), 영상 메타데이터(제목·태그·카테고리), 수익화 상태 플래그(status.isLinked) 수집. 2024년 1월~2026년 3월 시계열 데이터.<br>
+      &nbsp;- <strong>Social Blade / Apify API</strong>: 채널별 월간 추정 수익 범위, 구독자·조회수 역사적 변화 그래프 수집. AI 채널 8개·전통 채널 8개 총 16개 채널 대상으로 시범 수집 완료(2026년 3월 기준).<br>
+      &nbsp;- <strong>기존 학술 데이터셋 2차 분석</strong>: Dunna et al.(2022)의 354,000개 영상·9,000개 채널 데이터셋(저자 공유 요청), Kaggle YouTube Tech Channels 2025 공개 데이터셋, Global YouTube Trending Dataset 2022–2025(ResearchGate) 활용.<br><br>
+
+      <strong>③ 온라인 커뮤니티 텍스트 데이터 (넷노그라피 대상)</strong><br>
+      &nbsp;- <strong>Reddit r/PartneredYoutube</strong>: YouTube 파트너 크리에이터 커뮤니티. Demonetization 관련 자기 보고 게시물·댓글 수집. PullPush 공개 API 활용, 2023~2026년 게시물 수집(시범 수집: 15건 확보).<br>
+      &nbsp;- <strong>Reddit r/NewTubers / r/youtubers</strong>: 신규 크리에이터 커뮤니티. AI 채널 수익화 관련 경험 담론 분석.<br>
+      &nbsp;- <strong>Wayback Machine 아카이브</strong>: 채널 페이지 과거 스냅샷을 통해 수익화 배지 표시 여부 추적, Demonetization 시점 추정.<br><br>
+
+      <strong>④ 정책 문서 (문서 분석 대상)</strong><br>
+      &nbsp;- 유튜브 수익 창출 정책 공식 문서 및 커뮤니티 가이드라인 시계열 변화(2020~2026년)<br>
+      &nbsp;- <strong>기준점(Cutoff):</strong> 2025년 7월 유튜브 '비진정성(Inauthentic) AI 콘텐츠' 수익 정지 정책 강화를 전후 비교 분석의 기준점으로 설정<br>
+      &nbsp;- 방통위 플랫폼 이용자 조사, KISDI 미디어 통계, 한국 MCN 협회 공개 데이터
     </td>
   </tr>
 
@@ -215,7 +234,19 @@
   <tr>
     <th>연구 방법</th>
     <td>
-      혼합 연구 방법론(Mixed Methods Research)을 적용하여 질적·양적 연구를 병행한다. 구체적으로는 ① 알고리즘 감사(Algorithm Audit): YouTube Data API를 활용하여 AI 생성 콘텐츠와 인간 창작 콘텐츠의 Demonetization 패턴을 정량적으로 분석하고, ② 심층 인터뷰: 한국 AI 콘텐츠 크리에이터 30명 및 전통 크리에이터 20명을 대상으로 Demonetization 경험과 대응 전략에 대한 심층 인터뷰를 실시하며, ③ 정책 문서 분석: 유튜브 수익 창출 정책의 시계열적 변화를 문서 분석을 통해 추적하고, ④ 비교 사례 연구: 한국·미국·유럽의 플랫폼 정책 비교 분석을 수행한다.
+      본 연구는 <strong>삼각검증(Triangulation) 기반 혼합 연구 방법론(Mixed Methods Research)</strong>을 적용하여, 정량적·정성적 연구를 병행함으로써 연구 결과의 타당성과 신뢰성을 확보한다.<br><br>
+
+      <strong>① 알고리즘 감사 (Algorithm Audit) — 정량 연구</strong><br>
+      YouTube Data API v3을 활용하여 AI 생성 콘텐츠 채널과 전통 채널의 Demonetization 패턴을 대규모 데이터로 정량 비교한다. Python <code>google-api-python-client</code> 라이브러리를 활용한 자동화 수집 스크립트를 구축하여 채널 통계·영상 메타데이터·수익화 상태를 시계열로 수집한다. Social Blade Apify API를 통해 채널별 월간 추정 수익 범위 및 구독자·조회수 역사적 변화를 수집하고, 2025년 7월 정책 변화를 기준점으로 전후 비교 분석을 수행한다.<br><br>
+
+      <strong>② 넷노그라피 (Netnography) — 정성 연구</strong><br>
+      Reddit r/PartneredYoutube, r/NewTubers 등 유튜브 크리에이터 온라인 커뮤니티에서 Demonetization 관련 자기 보고 게시물을 PullPush 공개 API로 수집한다. 수집된 텍스트 데이터는 NVivo를 활용하여 주제 분석(Thematic Analysis)을 실시하고, Demonetization 경험에 관한 크리에이터의 직접 서술과 감정적 반응을 코딩·분류한다. 개인정보 보호를 위해 작성자는 전원 익명 처리한다.<br><br>
+
+      <strong>③ 심층 인터뷰 (In-depth Interview) — 정성 연구</strong><br>
+      한국 AI 콘텐츠 크리에이터 30명과 전통 크리에이터 20명, 총 50명을 대상으로 반구조화 인터뷰(Semi-structured Interview)를 실시한다. 인터뷰 문항은 Demonetization 경험 여부와 시점, 수익 구조 변화, 콘텐츠 전략 조정, AI 도구 활용 현황, 플랫폼 의존성과 경제적 불안정성 인식 등을 포함한다. 인터뷰는 화상(Zoom) 또는 대면으로 진행하며, 동의 하에 녹음·전사하고 NVivo로 분석한다.<br><br>
+
+      <strong>④ 정책 문서 분석 및 비교 사례 연구</strong><br>
+      유튜브 수익 창출 정책 공식 문서의 시계열 변화를 추적하고, Wayback Machine 아카이브를 활용하여 정책 시행 전후 채널 페이지 변화를 분석한다. 한국·미국·유럽의 AI 콘텐츠 플랫폼 정책을 비교 사례 연구로 분석하여 한국 맥락의 특수성과 정책적 함의를 도출한다.
     </td>
   </tr>
 
@@ -224,10 +255,22 @@
     <th>연구 절차</th>
     <td>
       <ol>
-        <li><strong>1단계 (2026년 1~3월):</strong> 선행연구 검토 및 이론적 프레임워크 구축. 유튜브 수익 창출 정책 변화 현황 파악 및 연구 설계 확정.</li>
-        <li><strong>2단계 (2026년 4~9월):</strong> 데이터 수집 단계. YouTube Data API 기반 알고리즘 감사, 정책 문서 시계열 분석, 크리에이터 심층 인터뷰(50명) 실시 및 녹취·전사.</li>
-        <li><strong>3단계 (2026년 10월~2027년 3월):</strong> 데이터 분석 단계. 정성적(주제 분석) · 정량적(통계 분석) 병행 분석, 비교 사례 연구 수행, 이론 모델 구축.</li>
-        <li><strong>4단계 (2027년 4월~12월):</strong> 논문 작성 및 검토. 중간 발표, 지도교수 검토, 최종 논문 제출.</li>
+        <li>
+          <strong>1단계 (2026년 1~3월): 연구 설계 및 기반 구축</strong><br>
+          선행연구 검토(국내외 12편 실존 검증 완료) 및 이론적 프레임워크 확정. 유튜브 수익 창출 정책 변화 현황 파악. YouTube Data API v3 키 발급 및 Python 자동화 수집 스크립트 구축. AI 채널 16개·전통 채널 8개 파일럿 데이터 수집 완료. Reddit PullPush API 기반 넷노그라피 시범 수집(15건) 완료. 연구계획서 제출.
+        </li>
+        <li>
+          <strong>2단계 (2026년 4~6월): 정량 데이터 본 수집</strong><br>
+          YouTube Data API v3 기반 대규모 채널 통계 시계열 수집(AI 채널 100개 이상 목표). Social Blade Apify API 활용 월간 수익 추정 데이터 수집. 기존 학술 데이터셋 2차 분석(Dunna et al. 2022 데이터셋 저자 공유 요청, Kaggle 공개 데이터 활용). 2025년 7월 기준점 전후 Demonetization 패턴 비교 분석.
+        </li>
+        <li>
+          <strong>3단계 (2026년 7~9월): 정성 데이터 수집</strong><br>
+          크리에이터 심층 인터뷰 50명 실시(AI 30명·전통 20명) 및 녹취·전사. Reddit 넷노그라피 본 수집 및 NVivo 코딩 분석. 정책 문서 시계열 분석 및 Wayback Machine 아카이브 활용 수익화 상태 추적.
+        </li>
+        <li>
+          <strong>4단계 (2026년 10월~2027년 6월): 통합 분석 및 논문 작성</strong><br>
+          삼각검증 기반 정량·정성 데이터 통합 분석. 한국·미국·유럽 비교 사례 연구. 이론 모델 구축 및 정책 제언 도출. 논문 작성, 지도교수 검토, 학위논문 최종 제출.
+        </li>
       </ol>
     </td>
   </tr>
