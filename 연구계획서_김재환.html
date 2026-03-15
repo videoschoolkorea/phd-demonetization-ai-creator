@@ -251,19 +251,22 @@
   <tr>
     <th>연구 방법</th>
     <td>
-      본 연구는 <strong>삼각검증(Triangulation) 기반 혼합 연구 방법론(Mixed Methods Research)</strong>을 적용하여, 정량적·정성적 연구를 병행함으로써 연구 결과의 타당성과 신뢰성을 확보한다.<br><br>
+      본 연구는 <strong>삼각검증(Triangulation) 기반 혼합 연구 방법론(Mixed Methods Research — 수렴적 병행 설계, Convergent Parallel Design)</strong>을 적용하여(Creswell &amp; Creswell, 2018), 정량적·정성적 연구를 병행 수행한 후 통합 해석함으로써 연구 결과의 내적 타당성(Internal Validity)과 신뢰성을 확보한다.<br><br>
 
       <strong>① 알고리즘 감사 (Algorithm Audit) — 정량 연구</strong><br>
-      YouTube Data API v3을 활용하여 AI 생성 콘텐츠 채널과 전통 채널의 Demonetization 패턴을 대규모 데이터로 정량 비교한다. Python <code>google-api-python-client</code> 라이브러리를 활용한 자동화 수집 스크립트를 구축하여 채널 통계·영상 메타데이터·수익화 상태를 시계열로 수집한다. Social Blade Apify API를 통해 채널별 월간 추정 수익 범위 및 구독자·조회수 역사적 변화를 수집하고, 2025년 7월 정책 변화를 기준점으로 전후 비교 분석을 수행한다.<br><br>
+      YouTube Data API v3의 공개 접근 가능 필드(channels.list: statistics, snippet; videos.list: snippet, statistics, status)를 활용하여 AI 생성 콘텐츠 채널과 전통 채널의 채널 성장 패턴·영상 메타데이터 시계열을 정량 비교한다. <strong>중요 제약 사항</strong>: YouTube Data API의 수익화 상태(monetizationDetails)는 채널 소유자 인증(OAuth 2.0) 없이는 외부 연구자가 직접 접근할 수 없다. 이에 따라 Demonetization 상태의 간접 측정을 위해 Dunna et al.(2022)의 방법론을 준거로 삼아 다음의 프록시 지표(Proxy Indicators)를 사용한다: ▲ 영상 업로드 빈도 급감(채널 활동 중단 패턴), ▲ 조회수 대비 구독자 성장률 이상 변동, ▲ 콘텐츠 삭제/비공개 전환 패턴(Wayback Machine 아카이브 대조). Python <code>google-api-python-client</code> 라이브러리로 자동화 수집 스크립트를 구축하여 2024년 1월~2026년 3월 시계열 데이터를 수집하고, 2025년 7월 정책 변화를 기준점으로 전후 비교 분석을 수행한다. 수익화 상태의 직접 수집은 연구 참여 크리에이터(인터뷰 동의자)가 자신의 YouTube Studio 데이터를 익명 제공하는 방식(자기 보고 데이터)으로 보완한다.<br><br>
 
       <strong>② 넷노그라피 (Netnography) — 정성 연구</strong><br>
-      한국 유튜브 크리에이터가 주로 활동하는 온라인 커뮤니티를 대상으로 Demonetization 관련 자기 보고 텍스트 데이터를 수집한다. 구체적으로 ▲네이버 카페(유튜브 크리에이터 관련 대형 카페), ▲유튜브 댓글·커뮤니티 탭(수익 정지 피해 공유 영상 중심, YouTube Data API v3 commentThreads 활용), ▲디시인사이드 유튜버 갤러리·에펨코리아 등 익명 커뮤니티(공개 게시글 크롤링), ▲카카오톡 오픈채팅 공개 그룹(참여자 동의 취득 후 참여 관찰)을 주요 수집처로 설정한다. 수집된 텍스트 데이터는 NVivo를 활용하여 주제 분석(Thematic Analysis)을 실시하고, 한국 크리에이터의 Demonetization 경험과 플랫폼 의존성 담론을 코딩·분류한다. 연구 윤리 준수를 위해 모든 작성자는 익명 처리한다. 한국 사례 연구의 특수성을 보완하기 위해, 영미권 Reddit(r/PartneredYoutube) 데이터는 한국 데이터와의 비교 분석 목적으로만 제한적으로 활용한다.<br><br>
+      Kozinets(2020)의 넷노그라피 방법론을 준거로, 한국 유튜브 크리에이터가 주로 활동하는 공개 온라인 커뮤니티를 대상으로 Demonetization 관련 자기 보고 텍스트 데이터를 수집한다. 수집처: ▲네이버 카페(유튜버 관련 대형 공개 카페, 네이버 검색 API 활용), ▲유튜브 댓글(수익 정지 피해 공유 영상 중심, YouTube Data API v3 commentThreads), ▲디시인사이드 유튜버 갤러리·에펨코리아(공개 게시글 크롤링), ▲카카오톡 오픈채팅 공개 그룹(참여자 서면 동의 취득 후 참여 관찰). 수집된 텍스트는 NVivo를 활용하여 주제 분석(Thematic Analysis, Braun &amp; Clarke, 2006)을 실시한다. <strong>연구 윤리</strong>: 공개 게시글 수집 시에도 저작자 익명 처리를 원칙으로 하며, 직접 인용 시 IRB 심의 기준에 따라 동의 여부를 판단한다. 오픈채팅 참여 관찰은 IRB 심의 후 시행한다.<br><br>
 
       <strong>③ 심층 인터뷰 (In-depth Interview) — 정성 연구</strong><br>
-      한국 AI 콘텐츠 크리에이터 30명과 전통 크리에이터 20명, 총 50명을 대상으로 반구조화 인터뷰(Semi-structured Interview)를 실시한다. 인터뷰 문항은 Demonetization 경험 여부와 시점, 수익 구조 변화, 콘텐츠 전략 조정, AI 도구 활용 현황, 플랫폼 의존성과 경제적 불안정성 인식 등을 포함한다. 인터뷰는 화상(Zoom) 또는 대면으로 진행하며, 동의 하에 녹음·전사하고 NVivo로 분석한다.<br><br>
+      한국 AI 콘텐츠 크리에이터 30명과 전통 크리에이터 20명, 총 50명을 대상으로 반구조화 인터뷰(Semi-structured Interview)를 실시한다. 표본 크기는 게스트(Guest et al., 2006)의 이론적 포화(Theoretical Saturation) 기준을 참조하여 설정하였으며, 혼합 연구 설계에서의 정성 표본 적절성(Creswell &amp; Creswell, 2018) 기준을 충족한다. 인터뷰 문항은 ▲Demonetization 경험 여부·시점·맥락, ▲수익 구조 변화, ▲AI 도구 활용 현황, ▲플랫폼 의존성 인식 등을 포함한다. 화상(Zoom) 또는 대면으로 진행하며, 동의 하에 녹음·전사 후 NVivo로 분석한다. <strong>IRB 심의 필수</strong>: 인터뷰 실시 전 중앙대학교 연구윤리심의위원회(IRB) 심의를 완료하며, 인터뷰 시 서면 동의서를 취득한다. 인터뷰 참여자는 익명 처리(채널명·개인 식별 정보 비식별화)하며, 데이터는 5년간 잠금 보관 후 폐기한다.<br><br>
 
       <strong>④ 정책 문서 분석 및 비교 사례 연구</strong><br>
-      유튜브 수익 창출 정책 공식 문서의 시계열 변화를 추적하고, Wayback Machine 아카이브를 활용하여 정책 시행 전후 채널 페이지 변화를 분석한다. 한국·미국·유럽의 AI 콘텐츠 플랫폼 정책을 비교 사례 연구로 분석하여 한국 맥락의 특수성과 정책적 함의를 도출한다.
+      유튜브 수익 창출 정책 공식 문서의 시계열 변화를 추적하고(2020~2026년, Wayback Machine 아카이브 활용), 한국·미국·유럽의 AI 콘텐츠 플랫폼 정책을 Yin(2018)의 다중 사례 연구(Multiple Case Study) 방법론에 따라 비교 분석한다. 분석 단위는 각국의 플랫폼 정책 문서, 정부 규제 기관 보고서(방통위·FTC·EU DSA), 산업계 가이드라인으로 설정한다. 유럽 사례의 경우 EU DSA(Digital Services Act) 알고리즘 투명성 의무 조항과의 비교를 중심으로 한다.<br><br>
+
+      <strong>⑤ 방법론 간 통합 (Integration Strategy)</strong><br>
+      수렴적 병행 설계에 따라 정량 데이터(API 시계열)와 정성 데이터(인터뷰·넷노그라피·정책 분석)를 각각 독립적으로 분석한 후, 결과를 결합(Joint Display) 방식으로 통합 해석한다. 불일치(Discrepant Findings) 발생 시 추가 데이터 수집 또는 재분석을 통해 설명하며, 이를 연구의 한계로 명시한다.
     </td>
   </tr>
 
@@ -305,9 +308,12 @@
     <th>연구의<br>한계점</th>
     <td>
       <ol>
-        <li><strong>알고리즘 접근의 한계:</strong> 유튜브 Demonetization 알고리즘의 내부 로직은 비공개로 유지되므로, 외부 데이터 기반의 추론적 분석에 의존할 수밖에 없다는 방법론적 한계가 존재한다.</li>
-        <li><strong>일반화 가능성의 제한:</strong> 본 연구가 한국 크리에이터 사례를 중심으로 하는 만큼, 연구 결과를 다른 문화권이나 국가에 직접 일반화하는 데 제한이 있을 수 있다.</li>
-        <li><strong>연구 결과의 시효성 제한:</strong> AI 기술과 플랫폼 정책이 매우 빠르게 변화하는 환경에서, 연구 진행 중 정책 변화로 인해 결과의 시의성이 제한될 가능성이 있다.</li>
+        <li><strong>알고리즘 내부 접근의 한계:</strong> 유튜브 Demonetization 알고리즘의 내부 로직은 비공개로 유지되므로, 외부 데이터 기반의 추론적 분석에 의존할 수밖에 없다는 방법론적 한계가 존재한다.</li>
+        <li><strong>YouTube Data API 수익화 상태 접근 제한:</strong> YouTube Data API v3의 <code>monetizationDetails</code> 필드는 채널 소유자 인증(OAuth 2.0) 없이는 외부 연구자가 직접 접근할 수 없다. 이에 따라 Demonetization 상태는 채널 성장 패턴·조회수 이상 변동·Wayback Machine 아카이브 등 프록시 지표와, 인터뷰 참여자의 자기 보고 데이터를 통해 간접 측정한다. 이는 직접 측정에 비해 정확도 한계가 있으며, 결과 해석 시 이 제약을 명시하여 연구의 투명성을 확보한다.</li>
+        <li><strong>인터뷰 표본의 일반화 한계:</strong> 반구조화 인터뷰 50명은 이론적 포화를 목표로 하나, 한국 유튜브 크리에이터 전체를 대표하는 확률 표본이 아니므로 통계적 일반화에는 제한이 있다. 혼합 연구 설계의 정성 연구로서 이론적 정교화(Theoretical Elaboration)에 기여하는 것이 목적임을 명시한다.</li>
+        <li><strong>넷노그라피 윤리 및 접근성 제약:</strong> 카카오톡 오픈채팅 등 반공개 공간의 경우 서면 동의 취득이 어려울 수 있으며, 플랫폼 정책 변화 또는 게시글 삭제로 인해 데이터 수집이 제한될 가능성이 있다.</li>
+        <li><strong>연구 결과의 시효성 제한:</strong> AI 기술과 플랫폼 정책이 매우 빠르게 변화하는 환경에서, 연구 진행 중 정책 변화로 인해 결과의 시의성이 제한될 가능성이 있다. 2025년 7월을 기준점으로 설정하여 이를 부분적으로 통제한다.</li>
+        <li><strong>비교 사례의 맥락 차이:</strong> 한국·미국·유럽의 플랫폼 정책 비교는 법제도·문화·시장 구조의 맥락 차이로 인해 직접 비교에 한계가 있으며, 이를 해석 단계에서 명시적으로 논의한다.</li>
       </ol>
     </td>
   </tr>
