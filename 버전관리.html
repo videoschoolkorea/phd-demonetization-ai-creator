@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연구계획서 버전 관리 — 김재환 박사과정</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #f0f4fb; color: #222; }
+
+header {
+  background: linear-gradient(135deg, #1a3a6c, #2c508f);
+  color: white; padding: 20px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+header h1 { font-size: 18px; font-weight: 700; }
+header p  { font-size: 11px; color: #aac4ff; margin-top: 4px; }
+.badge-latest { background: #f0c040; color: #1a3a6c; border-radius: 4px; font-size: 11px; font-weight: 700; padding: 3px 9px; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+/* 타임라인 */
+.timeline { position: relative; padding-left: 32px; margin-bottom: 40px; }
+.timeline::before { content:''; position:absolute; left:12px; top:0; bottom:0; width:3px; background:#2c508f; border-radius:2px; }
+
+.version-card {
+  position: relative; background: white;
+  border-radius: 12px; padding: 22px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(26,58,108,0.09);
+  border-left: 5px solid #2c508f;
+  transition: transform 0.15s;
+}
+.version-card:hover { transform: translateX(4px); }
+.version-card.latest { border-left-color: #27ae60; }
+
+.version-card::before {
+  content: '';
+  position: absolute; left: -38px; top: 22px;
+  width: 14px; height: 14px;
+  background: #2c508f; border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #2c508f;
+}
+.version-card.latest::before { background: #27ae60; box-shadow: 0 0 0 3px #27ae60; }
+
+.ver-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.ver-num { font-size: 20px; font-weight: 700; color: #1a3a6c; }
+.ver-date { font-size: 12px; color: #888; }
+.ver-type { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.type-init   { background: #e8f0fe; color: #1a3a6c; }
+.type-major  { background: #fce8ff; color: #7b1fa2; }
+.type-minor  { background: #fff3cd; color: #856404; }
+.type-patch  { background: #d4edda; color: #155724; }
+
+.ver-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 12px; }
+
+.changes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.change-item { background: #f8f9fd; border-radius: 8px; padding: 10px 12px; border-left: 3px solid #2c508f; }
+.change-item .section { font-size: 10px; color: #2c508f; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.change-item .desc { font-size: 12px; color: #444; line-height: 1.5; }
+
+.diff-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+.diff-table th { background: #1a3a6c; color: white; padding: 6px 10px; text-align: left; }
+.diff-table td { padding: 6px 10px; border-bottom: 1px solid #e8ecf4; vertical-align: top; }
+.diff-table tr:nth-child(even) td { background: #f8f9fd; }
+.diff-before { color: #c0392b; background: #fdecea; border-radius: 3px; padding: 1px 5px; }
+.diff-after  { color: #155724; background: #d4edda; border-radius: 3px; padding: 1px 5px; }
+
+.ver-links { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.ver-link { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; text-decoration: none; }
+.link-view   { background: #e8f0fe; color: #1a3a6c; }
+.link-github { background: #24292e; color: white; }
+.link-diff   { background: #fff3cd; color: #856404; }
+.link-view:hover   { background: #1a3a6c; color: white; }
+.link-github:hover { background: #444; }
+
+/* 요약 통계 */
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.stat { background: white; border-radius: 10px; padding: 16px 18px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.stat .num { font-size: 28px; font-weight: 700; color: #1a3a6c; }
+.stat .lbl { font-size: 11px; color: #777; margin-top: 4px; }
+
+.section-title { font-size: 16px; font-weight: 700; color: #1a3a6c; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e0e8f4; }
+
+/* 비교 섹션 */
+.compare-header { background: white; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.compare-col { background: #f8f9fd; border-radius: 8px; padding: 14px; }
+.compare-col h4 { font-size: 12px; font-weight: 700; color: #1a3a6c; margin-bottom: 10px; border-bottom: 1px solid #dce4f0; padding-bottom: 6px; }
+.compare-row { display: flex; gap: 8px; margin-bottom: 6px; font-size: 11px; }
+.compare-row .label { font-weight: 600; color: #555; min-width: 80px; }
+.compare-row .val-old { color: #c0392b; }
+.compare-row .val-new { color: #27ae60; }
+
+footer { text-align: center; padding: 20px; font-size: 11px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📋 연구계획서 버전 관리 대시보드</h1>
+    <p>유튜브 Demonetization × AI 크리에이터 경제 연구 — 김재환 박사과정 (중앙대학교 첨단영상대학원)</p>
+  </div>
+  <span class="badge-latest">최신: v1.3</span>
+</header>
+
+<div class="container">
+
+  <!-- 요약 통계 -->
+  <div class="summary">
+    <div class="stat"><div class="num">4</div><div class="lbl">총 버전 수</div></div>
+    <div class="stat"><div class="num">v1.3</div><div class="lbl">현재 버전</div></div>
+    <div class="stat"><div class="num">14편</div><div class="lbl">현재 선행연구 수</div></div>
+    <div class="stat"><div class="num">2026.03.31</div><div class="lbl">제출 마감일</div></div>
+  </div>
+
+  <!-- 섹션별 변경 이력 비교 -->
+  <div class="section-title">📊 v1.0 → v1.3 주요 변경 비교</div>
+  <div class="compare-header">
+    <div class="compare-grid">
+      <div class="compare-col">
+        <h4>🔴 v1.0 초기 버전</h4>
+        <div class="compare-row"><span class="label">연구 대상</span><span class="val-old">단순 1줄 기술</span></div>
+        <div class="compare-row"><span class="label">온라인 커뮤니티</span><span class="val-old">Reddit(미국) 중심</span></div>
+        <div class="compare-row"><span class="label">연구 방법</span><span class="val-old">4가지 단순 나열</span></div>
+        <div class="compare-row"><span class="label">연구 필요성</span><span class="val-old">추상적 서술</span></div>
+        <div class="compare-row"><span class="label">선행연구</span><span class="val-old">12편 (국내 5편)</span></div>
+        <div class="compare-row"><span class="label">실제 사례</span><span class="val-old">없음</span></div>
+        <div class="compare-row"><span class="label">파일 크기</span><span class="val-old">21,252 bytes</span></div>
+      </div>
+      <div class="compare-col">
+        <h4>🟢 v1.3 현재 버전</h4>
+        <div class="compare-row"><span class="label">연구 대상</span><span class="val-new">4개 층위 세분화</span></div>
+        <div class="compare-row"><span class="label">온라인 커뮤니티</span><span class="val-new">네이버카페·디시·카카오 중심</span></div>
+        <div class="compare-row"><span class="label">연구 방법</span><span class="val-new">삼각검증 4방향 체계화</span></div>
+        <div class="compare-row"><span class="label">연구 필요성</span><span class="val-new">실제 수치 데이터 인용</span></div>
+        <div class="compare-row"><span class="label">선행연구</span><span class="val-new">14편 (국내 7편)</span></div>
+        <div class="compare-row"><span class="label">실제 사례</span><span class="val-new">한국 2건 (매경·머투)</span></div>
+        <div class="compare-row"><span class="label">파일 크기</span><span class="val-new">30,610 bytes (+44%)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 버전 타임라인 -->
+  <div class="section-title">🕐 버전 변경 타임라인</div>
+  <div class="timeline">
+
+    <!-- v1.3 -->
+    <div class="version-card latest">
+      <div class="ver-header">
+        <span class="ver-num">v1.3</span>
+        <span class="badge-latest">최신</span>
+        <span class="ver-type type-patch">내용 보강</span>
+        <span class="ver-date">2026-03-15 | 커밋: ad00401</span>
+      </div>
+      <div class="ver-title">한국 실제 수익 정지 사례 추가 — 연구 필요성·선행연구·문헌DB 업데이트</div>
+      <div class="changes-grid">
+        <div class="change-item">
+          <div class="section">연구의 필요성</div>
+          <div class="desc">한국 AI Slop 세계 1위(84억5천만 회) 데이터 추가. '3분 지혜' 채널 20억 회 후 수익 정지 사례 명시</div>
+        </div>
+        <div class="change-item">
+          <div class="section">선행연구 검토</div>
+          <div class="desc">국내 언론 보도 섹션 신설. 매일경제(2026.01.19) + 머니투데이(2026.01.16) 2건 추가</div>
+        </div>
+        <div class="change-item">
+          <div class="section">문헌 DB</div>
+          <div class="desc">12편 → 14편. 국내 5편 → 7편. 언론 보도 '언론보도' 유형 신설</div>
+        </div>
+      </div>
+      <div class="ver-links">
+        <a class="ver-link link-view" href="/연구계획서_김재환.html" target="_blank">📄 현재 버전 보기</a>
+        <a class="ver-link link-github" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/commit/ad00401" target="_blank">🔗 GitHub</a>
+        <a class="ver-link link-diff" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/compare/7879b60...ad00401" target="_blank">± Diff 보기</a>
+      </div>
+    </div>
+
+    <!-- v1.2 -->
+    <div class="version-card">
+      <div class="ver-header">
+        <span class="ver-num">v1.2</span>
+        <span class="ver-type type-major">구조 수정</span>
+        <span class="ver-date">2026-03-15 | 커밋: 7879b60</span>
+      </div>
+      <div class="ver-title">온라인 커뮤니티 데이터 수집처 한국 중심으로 전면 교체</div>
+      <div class="changes-grid">
+        <div class="change-item">
+          <div class="section">연구 대상 ③</div>
+          <div class="desc"><span class="diff-before">Reddit(미국)</span> → <span class="diff-after">네이버 카페·디시인사이드·유튜브댓글·카카오오픈채팅</span></div>
+        </div>
+        <div class="change-item">
+          <div class="section">연구 방법 ②</div>
+          <div class="desc">넷노그라피 수집처를 한국 4개 채널 중심으로 재기술. Reddit은 비교 분석용으로 위치 조정</div>
+        </div>
+        <div class="change-item">
+          <div class="section">연구 절차</div>
+          <div class="desc">1·3단계 넷노그라피 수집처를 한국 커뮤니티로 교체</div>
+        </div>
+      </div>
+      <div class="ver-links">
+        <a class="ver-link link-view" href="/versions/연구계획서_v1.2_7879b60.html" target="_blank">📄 이 버전 보기</a>
+        <a class="ver-link link-github" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/commit/7879b60" target="_blank">🔗 GitHub</a>
+        <a class="ver-link link-diff" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/compare/fd2421d...7879b60" target="_blank">± Diff 보기</a>
+      </div>
+    </div>
+
+    <!-- v1.1 -->
+    <div class="version-card">
+      <div class="ver-header">
+        <span class="ver-num">v1.1</span>
+        <span class="ver-type type-major">주요 보강</span>
+        <span class="ver-date">2026-03-15 | 커밋: fd2421d</span>
+      </div>
+      <div class="ver-title">연구 대상·방법·절차 3개 섹션 대폭 보강 — 삼각검증 설계 반영</div>
+      <div class="changes-grid">
+        <div class="change-item">
+          <div class="section">연구 대상</div>
+          <div class="desc">단순 1줄 → 4개 층위 세분화. YouTube Data API, Social Blade/Apify, 학술 데이터셋 2차 분석 추가</div>
+        </div>
+        <div class="change-item">
+          <div class="section">연구 방법</div>
+          <div class="desc">삼각검증(Triangulation) 4방향으로 체계화: 알고리즘 감사·넷노그라피·심층 인터뷰·정책 분석</div>
+        </div>
+        <div class="change-item">
+          <div class="section">연구 절차</div>
+          <div class="desc">4단계 세부화 (2026.1~2027.6). 파일럿 수집 완료 현황 반영. 2025년 7월 Cutoff 기준점 명시</div>
+        </div>
+        <div class="change-item">
+          <div class="section">연구 대상 ②</div>
+          <div class="desc">Dunna et al.(2022) 354,000개 영상 데이터셋 저자 공유 요청, Kaggle 공개 데이터 활용 방안 추가</div>
+        </div>
+      </div>
+      <div class="ver-links">
+        <a class="ver-link link-view" href="/versions/연구계획서_v1.1_fd2421d.html" target="_blank">📄 이 버전 보기</a>
+        <a class="ver-link link-github" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/commit/fd2421d" target="_blank">🔗 GitHub</a>
+        <a class="ver-link link-diff" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/compare/75f21c7...fd2421d" target="_blank">± Diff 보기</a>
+      </div>
+    </div>
+
+    <!-- v1.0 -->
+    <div class="version-card">
+      <div class="ver-header">
+        <span class="ver-num">v1.0</span>
+        <span class="ver-type type-init">최초 작성</span>
+        <span class="ver-date">2026-03-15 | 커밋: 75f21c7</span>
+      </div>
+      <div class="ver-title">연구계획서 초안 완성 — 14개 섹션 전체 작성</div>
+      <div class="changes-grid">
+        <div class="change-item">
+          <div class="section">기본 구조</div>
+          <div class="desc">학교 샘플 PDF 양식 분석 후 14개 섹션 HTML 작성. 연구 제목·목적·필요성·연구문제 3개 완성</div>
+        </div>
+        <div class="change-item">
+          <div class="section">선행연구</div>
+          <div class="desc">국외 7편 + 국내 5편 = 12편. 모두 실존 검증 완료 (KCI·ACM·SSCI 등재 확인)</div>
+        </div>
+        <div class="change-item">
+          <div class="section">이론·방법</div>
+          <div class="desc">Platform Capitalism, Algorithmic Governance, Creator Economy 등 이론 틀 확정. 혼합 연구 방법론 채택</div>
+        </div>
+        <div class="change-item">
+          <div class="section">예상 목차</div>
+          <div class="desc">6장 구성 확정. 제1장(서론)~제6장(결론 및 정책 함의)</div>
+        </div>
+      </div>
+      <div class="ver-links">
+        <a class="ver-link link-view" href="/versions/연구계획서_v1.0_75f21c7.html" target="_blank">📄 이 버전 보기</a>
+        <a class="ver-link link-github" href="https://github.com/videoschoolkorea/phd-demonetization-ai-creator/commit/75f21c7" target="_blank">🔗 GitHub</a>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- 향후 계획 -->
+  <div class="section-title">🗓 향후 버전 계획</div>
+  <div class="compare-header">
+    <table class="diff-table">
+      <thead>
+        <tr><th>예정 버전</th><th>예정 시기</th><th>주요 내용</th><th>상태</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>v1.4</strong></td><td>2026년 3월 중</td><td>지도교수 1차 피드백 반영</td><td>🔲 예정</td></tr>
+        <tr><td><strong>v1.5</strong></td><td>2026년 3월 말</td><td>H (설문 30문항) 추가, 예상 목차 보완</td><td>🔲 예정</td></tr>
+        <tr><td><strong>v2.0</strong></td><td>2026년 3월 31일</td><td>최종 제출본 — 지도교수 최종 승인</td><td>🔲 예정</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>제이스(Jace) AI 어시스턴트 · 중앙대학교 첨단영상대학원 · 2026-03-15</footer>
+
+</body>
+</html>
