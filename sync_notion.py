@@ -185,11 +185,80 @@ def main():
     if memo:
         print(f"  메모: {memo}")
 
+    # 연구계획서 변경 감지 → 자동 버전 스냅샷 저장
+    proposal_changed = any("연구계획서" in f for f in changed)
+    if proposal_changed:
+        _save_version_snapshot(commits[0])
+
     success = append_commit_log_to_notion(commits, changed, memo)
     if success:
         print("✅ 완료!")
     else:
         print("❌ 실패. NOTION_TOKEN 환경변수를 확인하세요.")
+
+
+def _save_version_snapshot(commit: dict):
+    """연구계획서 변경 감지 시 자동 버전 스냅샷 저장 + CHANGELOG 업데이트"""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    src = os.path.join(script_dir, "연구계획서_김재환.html")
+    versions_dir = os.path.join(script_dir, "versions")
+    os.makedirs(versions_dir, exist_ok=True)
+
+    # 기존 버전 번호 파악
+    import glob, re
+    existing = glob.glob(os.path.join(versions_dir, "연구계획서_v*.html"))
+    versions = []
+    for f in existing:
+        m = re.search(r'v(\d+)\.(\d+)_', os.path.basename(f))
+        if m:
+            versions.append((int(m.group(1)), int(m.group(2))))
+
+    # 다음 버전 번호
+    if versions:
+        latest_major, latest_minor = max(versions)
+        next_ver = f"v{latest_major}.{latest_minor + 1}"
+    else:
+        next_ver = "v1.0"
+
+    # 스냅샷 저장
+    snap_name = f"연구계획서_{next_ver}_{commit['hash']}.html"
+    snap_path = os.path.join(versions_dir, snap_name)
+    if os.path.exists(src):
+        import shutil
+        shutil.copy2(src, snap_path)
+        size = os.path.getsize(snap_path)
+        print(f"  📸 버전 스냅샷 저장: {snap_name} ({size:,} bytes)")
+
+        # CHANGELOG.md 자동 업데이트
+        changelog_path = os.path.join(versions_dir, "CHANGELOG.md")
+        now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        new_entry = f"""
+---
+
+## {next_ver} — {now} (커밋: {commit['hash']})
+**변경 유형**: 업데이트
+
+### 커밋 메시지
+{commit['message']}
+
+### 파일
+- 스냅샷: `versions/{snap_name}` ({size:,} bytes)
+
+"""
+        if os.path.exists(changelog_path):
+            with open(changelog_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            # 첫 번째 ---  앞에 새 항목 삽입
+            insert_pos = content.find("\n---\n")
+            if insert_pos != -1:
+                content = content[:insert_pos] + new_entry + content[insert_pos:]
+            else:
+                content = content + new_entry
+            with open(changelog_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        print(f"  📝 CHANGELOG.md 업데이트 완료")
+    else:
+        print(f"  ⚠ 연구계획서 파일 없음: {src}")
 
 
 if __name__ == "__main__":
