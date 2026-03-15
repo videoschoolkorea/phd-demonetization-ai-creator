@@ -1,0 +1,17 @@
+﻿channel_id,channel_name,status,collected_at,type,country,note
+UCddiUEpeqJcYeBxX1IVBKvQ,BRIGHT SIDE,http_error:403,2026-03-15T12:11:23.115929,AI,INT,AI 그래픽 기반 교육 채널
+UC9-y-6csu5WGm29I7JiwpnA,Computerphile,http_error:403,2026-03-15T12:11:27.206619,AI,UK,AI/CS 교육
+UCbmNph6atAoGfqLoCL_duAg,Kurzgesagt,http_error:403,2026-03-15T12:11:30.913665,AI,DE,AI 애니메이션 기반
+UCsXVk37bltHxD1rDPwtNM8Q,Kurzgesagt KR,http_error:403,2026-03-15T12:11:34.536160,AI,KR,한국어 AI 교육
+UC4JX40jDee_tINbkjycV4Sg,Tech With Tim,http_error:403,2026-03-15T12:11:38.094456,AI,US,AI 코딩 교육
+UCWX3yGbODI3HLNnFCNfQigA,AI Explained,http_error:403,2026-03-15T12:11:40.435856,AI,US,AI 뉴스/분석
+UCnUYZLuoy1rq1aVMwx4aTzw,두두팝DUDUPOP,http_error:403,2026-03-15T12:11:43.962277,AI,KR,한국 AI 콘텐츠
+UC_x5XG1OV2P6uZZ5FSM9Ttw,Google Developers,http_error:403,2026-03-15T12:11:46.368766,AI,US,AI 기술 콘텐츠
+UCXuqSBlHAE6Xw-yeJA0Tunw,Linus Tech Tips,http_error:403,2026-03-15T12:11:49.007795,Traditional,CA,"IT 리뷰, 직접 촬영"
+UCBcRF18a7Qf58cCRy5xuWwQ,MrBeast,http_error:403,2026-03-15T12:11:52.398061,Traditional,US,"엔터테인먼트, 직접 출연"
+UC295-Dw4tzbADgNButmlKiA,MKBHD,http_error:403,2026-03-15T12:11:54.772675,Traditional,US,"테크 리뷰, 직접 촬영"
+UCVhQ2NnY5Rskt6UjCUkJ_DA,MKBHD (Korean sub),http_error:403,2026-03-15T12:11:58.126708,Traditional,KR,한국어 더빙
+UCo8bcnLyZH8tBIH9V1mLgqQ,Batman,http_error:403,2026-03-15T12:12:00.998107,Traditional,KR,한국 IT 유튜버
+UCupvZG-5ko_eiXAupbDfxWw,CNN,http_error:403,2026-03-15T12:12:04.870652,Traditional,US,뉴스 미디어
+UCaXkIU1QidjPwiAYu6GcHjg,JTBC News,http_error:403,2026-03-15T12:12:08.369021,Traditional,KR,한국 뉴스 방송
+UCQMBxjbngN7lHIBg_BLBeCg,KBS News,http_error:403,2026-03-15T12:12:12.162464,Traditional,KR,한국 공영방송

@@ -1,0 +1,42 @@
+{
+  "title": "YouTube Demonetization 연구 데이터 수집 전략 가이드",
+  "researcher": "김재환 (중앙대학교 첨단영상대학원)",
+  "date": "2026-03-15T12:16:04.403808",
+  "sources": {
+    "youtube_api": {
+      "status": "16/16개 성공",
+      "method": "YouTube 공개 채널 페이지 크롤링",
+      "next_step": "YouTube Data API v3 키 발급 후 statistics/status 파트 추가 수집 권장",
+      "api_quota_note": "기본 할당량 10,000 units/day. 채널당 약 5 units 소비."
+    },
+    "socialblade": {
+      "status": "403 차단 (서버 측 봇 방어)",
+      "alternatives": [
+        "Apify Social Blade Actor 사용 (유료, 월 $5~): https://apify.com/radeance/socialblade-api",
+        "Social Blade 수동 수집 + 스크린샷 (소규모 연구용)",
+        "YouTube Data API statistics로 대체 (조회수·구독자 직접 수집)"
+      ]
+    },
+    "reddit": {
+      "status": "15건 수집 (PullPush API)",
+      "method": "PullPush.io 무료 공개 API",
+      "next_step": "NVivo/Atlas.ti 또는 Python nltk로 텍스트 코딩 분석"
+    },
+    "academic_datasets": {
+      "kaggle": "https://www.kaggle.com/datasets/mihikaajayjadhav/youtube-tech-channels-statistics-2025",
+      "researchgate": "https://www.researchgate.net/publication/397007139",
+      "acm_dunna2022": "ACM 논문 저자(dunna@cs.umn.edu)에게 354,000개 영상 데이터셋 공유 요청"
+    },
+    "korean_specific": {
+      "방통위": "방송통신위원회 플랫폼 이용자 조사 (https://kcc.go.kr)",
+      "KISDI": "https://www.kisdi.re.kr",
+      "KMCNA": "한국 MCN 협회 공개 데이터"
+    }
+  },
+  "triangulation_design": {
+    "phase1_quantitative": "YouTube Data API + Social Blade(Apify) → 시계열 통계",
+    "phase2_qualitative": "Reddit PullPush 넷노그라피 + 심층 인터뷰 50명",
+    "phase3_policy": "유튜브 정책 문서 분석 (2020~2026) + 한/미/유럽 비교",
+    "cutoff_date": "2025-07 (YouTube 비진정성 AI 콘텐츠 정책 변경 기준점)"
+  }
+}

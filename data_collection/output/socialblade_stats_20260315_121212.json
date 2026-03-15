@@ -1,0 +1,146 @@
+[
+  {
+    "channel_id": "UCddiUEpeqJcYeBxX1IVBKvQ",
+    "channel_name": "BRIGHT SIDE",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:23.115929",
+    "type": "AI",
+    "country": "INT",
+    "note": "AI 그래픽 기반 교육 채널"
+  },
+  {
+    "channel_id": "UC9-y-6csu5WGm29I7JiwpnA",
+    "channel_name": "Computerphile",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:27.206619",
+    "type": "AI",
+    "country": "UK",
+    "note": "AI/CS 교육"
+  },
+  {
+    "channel_id": "UCbmNph6atAoGfqLoCL_duAg",
+    "channel_name": "Kurzgesagt",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:30.913665",
+    "type": "AI",
+    "country": "DE",
+    "note": "AI 애니메이션 기반"
+  },
+  {
+    "channel_id": "UCsXVk37bltHxD1rDPwtNM8Q",
+    "channel_name": "Kurzgesagt KR",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:34.536160",
+    "type": "AI",
+    "country": "KR",
+    "note": "한국어 AI 교육"
+  },
+  {
+    "channel_id": "UC4JX40jDee_tINbkjycV4Sg",
+    "channel_name": "Tech With Tim",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:38.094456",
+    "type": "AI",
+    "country": "US",
+    "note": "AI 코딩 교육"
+  },
+  {
+    "channel_id": "UCWX3yGbODI3HLNnFCNfQigA",
+    "channel_name": "AI Explained",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:40.435856",
+    "type": "AI",
+    "country": "US",
+    "note": "AI 뉴스/분석"
+  },
+  {
+    "channel_id": "UCnUYZLuoy1rq1aVMwx4aTzw",
+    "channel_name": "두두팝DUDUPOP",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:43.962277",
+    "type": "AI",
+    "country": "KR",
+    "note": "한국 AI 콘텐츠"
+  },
+  {
+    "channel_id": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+    "channel_name": "Google Developers",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:46.368766",
+    "type": "AI",
+    "country": "US",
+    "note": "AI 기술 콘텐츠"
+  },
+  {
+    "channel_id": "UCXuqSBlHAE6Xw-yeJA0Tunw",
+    "channel_name": "Linus Tech Tips",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:49.007795",
+    "type": "Traditional",
+    "country": "CA",
+    "note": "IT 리뷰, 직접 촬영"
+  },
+  {
+    "channel_id": "UCBcRF18a7Qf58cCRy5xuWwQ",
+    "channel_name": "MrBeast",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:52.398061",
+    "type": "Traditional",
+    "country": "US",
+    "note": "엔터테인먼트, 직접 출연"
+  },
+  {
+    "channel_id": "UC295-Dw4tzbADgNButmlKiA",
+    "channel_name": "MKBHD",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:54.772675",
+    "type": "Traditional",
+    "country": "US",
+    "note": "테크 리뷰, 직접 촬영"
+  },
+  {
+    "channel_id": "UCVhQ2NnY5Rskt6UjCUkJ_DA",
+    "channel_name": "MKBHD (Korean sub)",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:11:58.126708",
+    "type": "Traditional",
+    "country": "KR",
+    "note": "한국어 더빙"
+  },
+  {
+    "channel_id": "UCo8bcnLyZH8tBIH9V1mLgqQ",
+    "channel_name": "Batman",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:12:00.998107",
+    "type": "Traditional",
+    "country": "KR",
+    "note": "한국 IT 유튜버"
+  },
+  {
+    "channel_id": "UCupvZG-5ko_eiXAupbDfxWw",
+    "channel_name": "CNN",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:12:04.870652",
+    "type": "Traditional",
+    "country": "US",
+    "note": "뉴스 미디어"
+  },
+  {
+    "channel_id": "UCaXkIU1QidjPwiAYu6GcHjg",
+    "channel_name": "JTBC News",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:12:08.369021",
+    "type": "Traditional",
+    "country": "KR",
+    "note": "한국 뉴스 방송"
+  },
+  {
+    "channel_id": "UCQMBxjbngN7lHIBg_BLBeCg",
+    "channel_name": "KBS News",
+    "status": "http_error:403",
+    "collected_at": "2026-03-15T12:12:12.162464",
+    "type": "Traditional",
+    "country": "KR",
+    "note": "한국 공영방송"
+  }
+]
