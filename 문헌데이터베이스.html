@@ -331,9 +331,9 @@
 </header>
 
 <div class="tab-bar">
-  <div class="tab-btn active" onclick="showTab('all')">전체 (14편)</div>
-  <div class="tab-btn" onclick="showTab('int')">국외 문헌 (7편)</div>
-  <div class="tab-btn" onclick="showTab('kor')">국내 문헌 (7편)</div>
+  <div class="tab-btn active" onclick="showTab('all')">전체 (39편)</div>
+  <div class="tab-btn" onclick="showTab('int')">국외 문헌 (18편)</div>
+  <div class="tab-btn" onclick="showTab('kor')">국내 문헌 (21편)</div>
 </div>
 
 <!-- 전체 탭 -->
@@ -389,7 +389,7 @@
 
     <button class="reset-btn" onclick="resetFilters()">↺ 초기화</button>
 
-    <span class="result-count" id="resultCount"><strong>14</strong> / 14편</span>
+    <span class="result-count" id="resultCount"><strong>39</strong> / 39편</span>
   </div>
 
   <!-- ═══ 정렬 바 ═══ -->
@@ -405,11 +405,11 @@
   </div>
 
   <div class="stats">
-    <div class="stat-card"><div class="num">14</div><div class="lbl">총 문헌 수</div></div>
-    <div class="stat-card"><div class="num">7</div><div class="lbl">국외 문헌</div></div>
-    <div class="stat-card"><div class="num">7</div><div class="lbl">국내 문헌</div></div>
-    <div class="stat-card"><div class="num">2016–2026</div><div class="lbl">발행 연도 범위</div></div>
-    <div class="stat-card"><div class="num">12</div><div class="lbl">링크 확인 가능</div></div>
+    <div class="stat-card"><div class="num">39</div><div class="lbl">총 문헌 수</div></div>
+    <div class="stat-card"><div class="num">18</div><div class="lbl">국외 문헌</div></div>
+    <div class="stat-card"><div class="num">21</div><div class="lbl">국내 문헌</div></div>
+    <div class="stat-card"><div class="num">2000–2026</div><div class="lbl">발행 연도 범위</div></div>
+    <div class="stat-card"><div class="num">39</div><div class="lbl">링크 확인 가능</div></div>
   </div>
   <div class="legend">
     <span><span class="badge-kor">국내</span> 국내 문헌</span>
@@ -1268,7 +1268,7 @@
 
 <!-- 국외 탭 -->
 <div class="tab-panel" id="tab-int">
-  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국외 문헌 7편 — 전체 탭과 동일한 항목, 국외만 필터</p>
+  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국외 문헌 18편 — 전체 탭과 동일한 항목, 국외만 필터</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1306,7 +1306,7 @@
 
 <!-- 국내 탭 -->
 <div class="tab-panel" id="tab-kor">
-  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국내 문헌 7편 — KCI 등재, 정부 연구보고서, 언론 보도</p>
+  <p style="margin-bottom:12px; font-size:12px; color:#555;">※ 국내 문헌 21편 — KCI 등재, 정부 연구보고서, 언론 보도</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1425,7 +1425,7 @@ function applyFilters() {
 
   // 결과 카운트 업데이트
   const countEl = document.getElementById('resultCount');
-  if (countEl) countEl.innerHTML = `<strong>${visible}</strong> / 14편`;
+  if (countEl) countEl.innerHTML = `<strong>${visible}</strong> / 39편`;
 }
 
 /* ═══════════════════════════════════════════
