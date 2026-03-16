@@ -67,7 +67,7 @@
     header .export-bar, .tab-bar, .stats, .legend { display: none !important; }
     body { background: white; font-size: 9pt; }
     .tab-panel { display: block !important; padding: 0; }
-    #tab-int, #tab-kor { display: none !important; }
+    #tab-int, #tab-kor, #tab-netno { display: none !important; }
     .table-wrap { overflow: visible !important; max-height: none !important; box-shadow: none; }
     table { min-width: 0 !important; width: 100% !important; }
     thead th { background: #1A3A6C !important; color: white !important; font-size: 8pt; padding: 4px 5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -331,10 +331,10 @@
 </header>
 
 <div class="tab-bar">
-  <div class="tab-btn active" onclick="showTab('all')">전체 (39편)</div>
-  <div class="tab-btn" onclick="showTab('int')">국외 문헌 (18편)</div>
-  <div class="tab-btn" onclick="showTab('kor')">국내 문헌 (21편)</div>
-  <div class="tab-btn" onclick="showTab('netno')" style="background:#e8f5e9;color:#2e7d32;">🗣️ 넷노그라피 사례 (50개)</div>
+  <div class="tab-btn active" onclick="showTab('all', this)">전체 (39편)</div>
+  <div class="tab-btn" onclick="showTab('int', this)">국외 문헌 (18편)</div>
+  <div class="tab-btn" onclick="showTab('kor', this)">국내 문헌 (21편)</div>
+  <div class="tab-btn" onclick="showTab('netno', this)" style="background:#e8f5e9;color:#2e7d32;">🗣️ 넷노그라피 사례 (50개)</div>
 </div>
 
 <!-- 전체 탭 -->
@@ -1771,11 +1771,12 @@
 </div>
 
 <script>
-function showTab(id) {
+function showTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+  var panel = document.getElementById('tab-' + id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 /* ═══════════════════════════════════════════
